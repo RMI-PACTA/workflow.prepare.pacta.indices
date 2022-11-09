@@ -1,21 +1,21 @@
 # necessary packages -----------------------------------------------------------
-
-suppressPackageStartupMessages({
-  library(cli)
-  library(dplyr)
-  library(fs)
-  library(here)
-  library(purrr)
-  library(readr)
-  library(yaml)
+# please add all dependencies to imports.R
+source("./imports.R")
+invisible({
+  lapply(
+    requirements,
+    library,
+    character.only = TRUE
+  )
 })
 
-
 # paths ------------------------------------------------------------------------
+transition_monitor_dir <- "/home/bound"
+setwd(transition_monitor_dir)
 
-working_dir <- here::here("working_dir")
+working_dir <- file.path(transition_monitor_dir, "working_dir")
 
-input_dir <- "../pacta-data/2021Q4"
+input_dir <- "/home/pacta-data/2021Q4"
 output_dir <- input_dir
 
 
@@ -31,7 +31,6 @@ pacta_directories <- c(
 )
 
 holdings_date <- "2021Q4"
-
 
 # load indices data -------------------------------------------------------
 
@@ -92,8 +91,8 @@ for (portfolio_name in portfolio_names) {
   portfolio_name_ref_all <- portfolio_name
 
   cli::cli_alert_info("running PACTA on: {.emph {portfolio_name}}")
-  source("web_tool_script_1.R", local = TRUE)
-  source("web_tool_script_2.R", local = TRUE)
+  source("/home/bound/web_tool_script_1.R", local = TRUE)
+  source("/home/bound/web_tool_script_2.R", local = TRUE)
 
   eq_result <- file.path(working_dir, "40_Results", portfolio_name, "Equity_results_portfolio.rds")
   bond_result <- file.path(working_dir, "40_Results", portfolio_name, "Bonds_results_portfolio.rds")
