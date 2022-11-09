@@ -1,0 +1,12 @@
+version: "3"
+services:
+  indices_prep:
+    build:
+      context: .
+      args:
+        - GITHUB_PAT=${GITHUB_PAT}
+    env_file:
+      - .env
+    volumes:
+      - ~/github/workflow.transition.monitor:/home/bound
+      - ~/github/pacta-data/2021Q4:/home/pacta-data/2021Q4
