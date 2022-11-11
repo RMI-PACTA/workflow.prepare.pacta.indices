@@ -94,12 +94,16 @@ for (portfolio_name in portfolio_names) {
   source("/home/bound/web_tool_script_1.R", local = TRUE)
   source("/home/bound/web_tool_script_2.R", local = TRUE)
 
+  emissions <- file.path(working_dir, "30_Processed_Inputs", portfolio_name, "emissions.rds")
+
   eq_result <- file.path(working_dir, "40_Results", portfolio_name, "Equity_results_portfolio.rds")
   bond_result <- file.path(working_dir, "40_Results", portfolio_name, "Bonds_results_portfolio.rds")
 
+  emissions_out <- file.path(temporary_directory, paste0(portfolio_name, "_", basename(emissions)))
   eq_out <- file.path(temporary_directory, paste0(portfolio_name, "_", basename(eq_result)))
   bond_out <- file.path(temporary_directory, paste0(portfolio_name, "_", basename(bond_result)))
 
+  if (file.exists(emissions)) { file.copy(emissions, emissions_out) }
   if (file.exists(eq_result)) { file.copy(eq_result, eq_out) }
   if (file.exists(bond_result)) { file.copy(bond_result, bond_out) }
 }
@@ -109,7 +113,7 @@ for (portfolio_name in portfolio_names) {
 
 output_files <- list.files(
   temporary_directory,
-  pattern = "[.]rds$",
+  pattern = "*_portfolio[.]rds$",
   full.names = TRUE
   )
 
@@ -137,3 +141,36 @@ combined %>%
 combined %>%
   filter(grepl("Global Corp Bond", portfolio_name)) %>%
   saveRDS(file.path(output_dir, "Indices_bonds_portfolio.rds"))
+
+# -------------------------------------------------------------------------
+# output emissions data
+
+output_files_emissions <- list.files(
+  "~/Desktop/test_directory/",
+  pattern = "emissions[.]rds$",
+  full.names = TRUE
+)
+
+combined_emissions <- output_files_emissions %>%
+  map_dfr(readRDS)
+
+unlink(output_files_emissions)
+
+combined_emissions <-
+  combined_emissions %>%
+  mutate(portfolio_name = case_when(
+    grepl("S&P", portfolio_name) ~ "iShares Core S&P 500 ETF",
+    grepl("MSCI World", portfolio_name) ~ "iShares MSCI World ETF",
+    grepl("MSCI Emerging Markets", portfolio_name) ~ "iShares MSCI Emerging Markets ETF",
+    grepl("Global Corp Bond", portfolio_name) ~ "iShares Global Corp Bond UCITS ETF",
+    grepl("MSCI ACWI", portfolio_name) ~ "iShares MSCI ACWI ETF",
+    TRUE ~ portfolio_name
+  ))
+
+combined_emissions %>%
+  filter(!grepl("Global Corp Bond", portfolio_name)) %>%
+  saveRDS(file.path(output_dir, "Indices_equity_emissions.rds"))
+
+combined_emissions %>%
+  filter(grepl("Global Corp Bond", portfolio_name)) %>%
+  saveRDS(file.path(output_dir, "Indices_bonds_emissions.rds"))
