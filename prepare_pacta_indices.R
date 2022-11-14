@@ -146,7 +146,7 @@ combined %>%
 # output emissions data
 
 output_files_emissions <- list.files(
-  "~/Desktop/test_directory/",
+  temporary_directory,
   pattern = "emissions[.]rds$",
   full.names = TRUE
 )
