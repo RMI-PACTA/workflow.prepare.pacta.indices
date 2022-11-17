@@ -15,7 +15,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # install R package dependencies
-RUN Rscript -e 'install.packages("remotes")'
+RUN Rscript -e "install.packages('remotes')"
 
 # install PACTA R packages
 RUN Rscript -e "remotes::install_github(repo = 'RMI-PACTA/pacta.portfolio.analysis')"
