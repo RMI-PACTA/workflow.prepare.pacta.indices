@@ -15,7 +15,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # install R package dependencies
-RUN Rscript -e 'install.packages("devtools")'
+RUN Rscript -e "install.packages('devtools')"
 
 # install PACTA R packages
 RUN Rscript -e "devtools::install_github(repo = 'RMI-PACTA/pacta.portfolio.analysis')"
