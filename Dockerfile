@@ -6,7 +6,6 @@ ENV GITHUB_PAT $GITHUB_PAT
 # install system dependencies
 ARG SYS_DEPS="\
     git \
-    nano \
     "
 
 RUN apt-get update \
