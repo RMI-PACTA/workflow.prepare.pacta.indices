@@ -2,11 +2,9 @@
 # please add all dependencies to imports.R
 source("./imports.R")
 invisible({
-  lapply(
-    requirements,
-    library,
-    character.only = TRUE
-  )
+  lapply(requirements, function(pkg) {
+    suppressPackageStartupMessages(library(pkg, character.only = TRUE))
+  })
 })
 
 # paths ------------------------------------------------------------------------
