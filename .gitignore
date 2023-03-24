@@ -45,3 +45,6 @@ rsconnect/
 
 # environment variables necessary for Docker
 .env
+
+# macOS
+.DS_Store
