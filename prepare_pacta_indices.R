@@ -45,7 +45,6 @@ temporary_directory <- tempdir()
 portfolio_names <- unique(ishares_indices$portfolio_name)
 
 for (portfolio_name in portfolio_names) {
-
   fs::dir_delete(working_dir)
   fs::dir_create(file.path(working_dir, pacta_directories))
 
@@ -83,7 +82,7 @@ for (portfolio_name in portfolio_names) {
 
   write_csv(
     portfolio,
-    file.path(working_dir, "20_Raw_Inputs", paste0(portfolio_name,".csv"))
+    file.path(working_dir, "20_Raw_Inputs", paste0(portfolio_name, ".csv"))
   )
 
   portfolio_name_ref_all <- portfolio_name
@@ -104,10 +103,18 @@ for (portfolio_name in portfolio_names) {
   eq_out <- file.path(temporary_directory, paste0(portfolio_name, "_", basename(eq_result)))
   bond_out <- file.path(temporary_directory, paste0(portfolio_name, "_", basename(bond_result)))
 
-  if (file.exists(audit_file)) { file.copy(audit_file, audit_out) }
-  if (file.exists(emissions)) { file.copy(emissions, emissions_out) }
-  if (file.exists(eq_result)) { file.copy(eq_result, eq_out) }
-  if (file.exists(bond_result)) { file.copy(bond_result, bond_out) }
+  if (file.exists(audit_file)) {
+    file.copy(audit_file, audit_out)
+  }
+  if (file.exists(emissions)) {
+    file.copy(emissions, emissions_out)
+  }
+  if (file.exists(eq_result)) {
+    file.copy(eq_result, eq_out)
+  }
+  if (file.exists(bond_result)) {
+    file.copy(bond_result, bond_out)
+  }
 }
 
 
@@ -117,7 +124,7 @@ output_files <- list.files(
   temporary_directory,
   pattern = "*_portfolio[.]rds$",
   full.names = TRUE
-  )
+)
 
 combined <-
   output_files %>%
@@ -209,4 +216,3 @@ combined_audit %>%
 combined_audit %>%
   filter(grepl("Global Corp Bond", portfolio_name)) %>%
   saveRDS(file.path(output_dir, "Indices_bonds_audit.rds"))
-
