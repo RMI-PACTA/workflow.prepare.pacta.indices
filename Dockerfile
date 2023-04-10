@@ -17,6 +17,7 @@ RUN apt-get update \
 RUN Rscript -e "install.packages('remotes')"
 
 # install PACTA R packages
+RUN Rscript -e "remotes::install_github(repo = 'RMI-PACTA/pacta.data.scraping')"
 RUN Rscript -e "remotes::install_github(repo = 'RMI-PACTA/pacta.portfolio.import')"
 RUN Rscript -e "remotes::install_github(repo = 'RMI-PACTA/pacta.portfolio.analysis')"
 
