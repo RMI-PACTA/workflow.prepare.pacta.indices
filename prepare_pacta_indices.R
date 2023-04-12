@@ -32,8 +32,51 @@ holdings_date <- "2021Q4"
 
 # load indices data -------------------------------------------------------
 
-ishares_indices_bonds <- readRDS(file.path(input_dir, "ishares_indices_bonds.rds"))
-ishares_indices_equity <- readRDS(file.path(input_dir, "ishares_indices_equity.rds"))
+bonds_indices_urls <-
+  c(
+    "iShares Global Corp Bond UCITS ETF <USD (Distributing)>" =
+      "https://www.ishares.com/uk/individual/en/products/251813/ishares-global-corporate-bond-ucits-etf/"
+  )
+
+equity_indices_urls <-
+  c(
+    "iShares Core S&P 500 UCITS ETF USD (Dist) <USD (Distributing)>" =
+      "https://www.ishares.com/uk/individual/en/products/251900/ishares-sp-500-ucits-etf-inc-fund/",
+    "iShares MSCI World UCITS ETF <USD (Distributing)>" =
+      "https://www.ishares.com/uk/individual/en/products/251881/ishares-msci-world-ucits-etf-inc-fund/",
+    "iShares MSCI EM UCITS ETF USD (Acc)" =
+      "https://www.ishares.com/uk/individual/en/products/251858/ishares-msci-emerging-markets-ucits-etf-acc-fund/",
+    "iShares MSCI ACWI UCITS ETF <USD (Accumulating)>" =
+      "https://www.ishares.com/uk/individual/en/products/251850/ishares-msci-acwi-ucits-etf/"
+  )
+
+ishares_indices_bonds <-
+  dplyr::bind_rows(
+    lapply(
+      seq_along(bonds_indices_urls), function(index) {
+        get_ishares_index_data(
+          bonds_indices_urls[[index]],
+          names(bonds_indices_urls)[[index]],
+          holdings_date
+        )
+      }
+    )
+  ) %>%
+  process_ishares_index_data()
+
+ishares_indices_equity <-
+  dplyr::bind_rows(
+    lapply(
+      seq_along(equity_indices_urls), function(index) {
+        get_ishares_index_data(
+          equity_indices_urls[[index]],
+          names(equity_indices_urls)[[index]],
+          holdings_date
+        )
+      }
+    )
+  ) %>%
+  process_ishares_index_data()
 
 ishares_indices <- bind_rows(ishares_indices_bonds, ishares_indices_equity)
 
