@@ -29,6 +29,7 @@ pacta_directories <- c(
 )
 
 holdings_date <- "2021Q4"
+ishares_date <- "20211231"
 
 # load indices data -------------------------------------------------------
 
@@ -54,29 +55,29 @@ ishares_indices_bonds <-
   dplyr::bind_rows(
     lapply(
       seq_along(bonds_indices_urls), function(index) {
-        get_ishares_index_data(
+        pacta.data.scraping::get_ishares_index_data(
           bonds_indices_urls[[index]],
           names(bonds_indices_urls)[[index]],
-          holdings_date
+          ishares_date
         )
       }
     )
   ) %>%
-  process_ishares_index_data()
+  pacta.data.scraping::process_ishares_index_data()
 
 ishares_indices_equity <-
   dplyr::bind_rows(
     lapply(
       seq_along(equity_indices_urls), function(index) {
-        get_ishares_index_data(
+        pacta.data.scraping::get_ishares_index_data(
           equity_indices_urls[[index]],
           names(equity_indices_urls)[[index]],
-          holdings_date
+          ishares_date
         )
       }
     )
   ) %>%
-  process_ishares_index_data()
+  pacta.data.scraping::process_ishares_index_data()
 
 ishares_indices <- bind_rows(ishares_indices_bonds, ishares_indices_equity)
 
