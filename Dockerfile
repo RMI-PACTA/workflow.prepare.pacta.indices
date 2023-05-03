@@ -16,9 +16,6 @@ FROM --platform=linux/amd64 rocker/r-ver:4.2.3
 ARG CRAN_REPO="https://packagemanager.rstudio.com/cran/__linux__/jammy/2023-03-31+MbiAEzHt"
 RUN echo "options(repos = c(CRAN = '$CRAN_REPO'))" >> "${R_HOME}/etc/Rprofile.site"
 
-ARG GITHUB_PAT
-ENV GITHUB_PAT $GITHUB_PAT
-
 # install system dependencies
 ARG SYS_DEPS="git"
 
@@ -33,7 +30,7 @@ RUN Rscript -e "install.packages('pak')"
 # install PACTA R packages
 RUN Rscript -e "pak::pkg_install(pkg = 'RMI-PACTA/pacta.data.scraping')"
 RUN Rscript -e "pak::pkg_install(pkg = 'RMI-PACTA/pacta.portfolio.import')"
-RUN Rscript -e "pak::pkg_install(pkg = 'RMI-PACTA/pacta.portfolio.analysis')"
+RUN Rscript -e "pak::pkg_install(pkg = 'RMI-PACTA/pacta.portfolio.allocate')"
 RUN Rscript -e "pak::pkg_install(pkg = 'RMI-PACTA/pacta.portfolio.audit')"
 RUN Rscript -e "pak::pkg_install(pkg = 'RMI-PACTA/pacta.portfolio.utils')"
 
