@@ -6,10 +6,6 @@
 # those available on 2023-03-31
 # https://packagemanager.rstudio.com/client/#/repos/2/overview
 # https://packagemanager.rstudio.com/cran/__linux__/jammy/2023-03-31+MbiAEzHt
-#
-# sets CTAN repo to freeze TeX package dependencies to those available on
-# 2021-12-31
-# https://www.texlive.info/tlnet-archive/2021/12/31/tlnet/
 
 
 FROM --platform=linux/amd64 rocker/r-ver:4.2.3
