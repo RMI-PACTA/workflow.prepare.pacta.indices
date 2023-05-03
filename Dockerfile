@@ -1,8 +1,5 @@
 FROM rocker/tidyverse
 
-ARG GITHUB_PAT
-ENV GITHUB_PAT $GITHUB_PAT
-
 # install system dependencies
 ARG SYS_DEPS="\
     git \
@@ -19,7 +16,7 @@ RUN Rscript -e "install.packages('remotes')"
 # install PACTA R packages
 RUN Rscript -e "remotes::install_github(repo = 'RMI-PACTA/pacta.data.scraping')"
 RUN Rscript -e "remotes::install_github(repo = 'RMI-PACTA/pacta.portfolio.import')"
-RUN Rscript -e "remotes::install_github(repo = 'RMI-PACTA/pacta.portfolio.analysis')"
+RUN Rscript -e "remotes::install_github(repo = 'RMI-PACTA/pacta.portfolio.allocate')"
 RUN Rscript -e "remotes::install_github(repo = 'RMI-PACTA/pacta.portfolio.audit')"
 RUN Rscript -e "remotes::install_github(repo = 'RMI-PACTA/pacta.portfolio.utils')"
 
