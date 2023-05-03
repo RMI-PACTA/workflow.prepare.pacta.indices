@@ -20,6 +20,8 @@ RUN Rscript -e "install.packages('remotes')"
 RUN Rscript -e "remotes::install_github(repo = 'RMI-PACTA/pacta.data.scraping')"
 RUN Rscript -e "remotes::install_github(repo = 'RMI-PACTA/pacta.portfolio.import')"
 RUN Rscript -e "remotes::install_github(repo = 'RMI-PACTA/pacta.portfolio.analysis')"
+RUN Rscript -e "remotes::install_github(repo = 'RMI-PACTA/pacta.portfolio.audit')"
+RUN Rscript -e "remotes::install_github(repo = 'RMI-PACTA/pacta.portfolio.utils')"
 
 # copy imports.R separately from rest of deps to optimize caching
 COPY imports.R /workflow.prepare.pacta.indices/imports.R
