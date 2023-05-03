@@ -23,7 +23,6 @@ The simplest way to run the data preparation process is by using docker.
 First, create a `.env` file in the root directory with the following fields: 
 
 ``` env
-GITHUB_PAT=**********
 TRANSITION_MONITOR_PATH=PATH/TO/workflow.transition.monitor
 PACTA_DATA_PATH=PATH/TO/pacta-data/2021Q4
 ```
