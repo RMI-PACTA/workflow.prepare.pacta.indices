@@ -17,13 +17,17 @@ input_dir <- "/home/pacta-data/2021Q4"
 output_dir <- input_dir
 
 # functions --------------------------------------------------------------------
-add_inv_and_port_names_if_needed <- function(data, investor_name, portfolio_name) {
+add_inv_and_port_names_if_needed <- function(data,
+                                             investor_name,
+                                             portfolio_name) {
   if (!"portfolio_name" %in% names(data)) {
-    data <- mutate(data, portfolio_name = .env$portfolio_name, .before = everything())
+    data <- data %>%
+      mutate(portfolio_name = .env$portfolio_name, .before = everything())
   }
 
   if (!"investor_name" %in% names(data)) {
-    data <- mutate(data, investor_name = .env$investor_name, .before = everything())
+    data <- data %>%
+      mutate(investor_name = .env$investor_name, .before = everything())
   }
 
   data
@@ -109,7 +113,7 @@ for (portfolio_name in portfolio_names) {
     filter(portfolio_name == .env$portfolio_name)
 
   investor_name <- unique(portfolio$investor_name)
-  
+
   if (length(investor_name) != 1L) {
     stop("Please ensure that each index dataset contains a single unique value for `investor_name`")
   }
@@ -161,22 +165,22 @@ for (portfolio_name in portfolio_names) {
 
   if (file.exists(audit_file)) {
     audit_ind <- readRDS(audit_file)
-    audit_ind <- add_inv_and_port_names_if_needed(audit_ind, investor_name, portfolio_name)    
+    audit_ind <- add_inv_and_port_names_if_needed(audit_ind, investor_name, portfolio_name)
     saveRDS(audit_ind, audit_out)
   }
   if (file.exists(emissions)) {
     emissions_ind <- readRDS(emissions)
-    emissions_ind <- add_inv_and_port_names_if_needed(emissions_ind, investor_name, portfolio_name)    
+    emissions_ind <- add_inv_and_port_names_if_needed(emissions_ind, investor_name, portfolio_name)
     saveRDS(emissions_ind, emissions_out)
   }
   if (file.exists(eq_result)) {
     eq_result_ind <- readRDS(eq_result)
-    eq_result_ind <- add_inv_and_port_names_if_needed(eq_result_ind, investor_name, portfolio_name)    
+    eq_result_ind <- add_inv_and_port_names_if_needed(eq_result_ind, investor_name, portfolio_name)
     saveRDS(eq_result_ind, eq_out)
   }
   if (file.exists(bond_result)) {
     bond_result_ind <- readRDS(bond_result)
-    bond_result_ind <- add_inv_and_port_names_if_needed(bond_result_ind, investor_name, portfolio_name)    
+    bond_result_ind <- add_inv_and_port_names_if_needed(bond_result_ind, investor_name, portfolio_name)
     saveRDS(bond_result_ind, bond_out)
   }
 }
