@@ -25,7 +25,7 @@ setwd(transition_monitor_dir)
 
 working_dir <- file.path(transition_monitor_dir, "working_dir")
 
-input_dir <- paste0("/home/pacta-data/", pacta_financial_timestamp)
+input_dir <- file.path("/home/pacta-data/", pacta_financial_timestamp)
 output_dir <- input_dir
 
 # functions --------------------------------------------------------------------
