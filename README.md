@@ -25,7 +25,9 @@ First, create a `.env` file in the root directory with the following fields:
 ``` env
 TRANSITION_MONITOR_PATH=PATH/TO/workflow.transition.monitor
 PACTA_DATA_PATH=PATH/TO/pacta-data/2021Q4
+R_CONFIG_ACTIVE=2022Q4
 ```
+The `R_CONFIG_ACTIVE` variable should point to the appropriate set of configuration values specified in the `config.yml` file. 
 
 Once these variables have been set, simply run 
 
