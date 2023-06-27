@@ -51,8 +51,8 @@ pacta_directories <- c(
   "50_Outputs"
 )
 
-holdings_date <- pacta_finanical_timestamp
-ishares_date <- ishares_date
+pacta_financial_timestamp <- config$pacta_finanical_timestamp
+ishares_date <- config$ishares_date
 
 # load indices data -------------------------------------------------------
 
@@ -133,7 +133,7 @@ for (portfolio_name in portfolio_names) {
           portfolio_name = portfolio_name,
           language = "EN",
           project_code = investor_name,
-          holdings_date = holdings_date
+          holdings_date = pacta_financial_timestamp
         )
       )
     )
