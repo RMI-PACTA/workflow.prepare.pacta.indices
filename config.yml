@@ -1,0 +1,12 @@
+default:
+  pacta_financial_timestamp: "2021Q4"
+  ishares_date: "20211231"
+
+2021Q4:
+  pacta_financial_timestamp: "2021Q4"
+  ishares_date: "20211231"
+
+2022Q4:
+  pacta_financial_timestamp: "2022Q4"
+  ishares_date: "20221231"
+

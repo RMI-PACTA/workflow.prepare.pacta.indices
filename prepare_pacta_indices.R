@@ -7,13 +7,25 @@ invisible({
   })
 })
 
+# config
+
+config <-
+  config::get(
+    file = "config.yml",
+    config = Sys.getenv("R_CONFIG_ACTIVE"),
+    use_parent = FALSE
+  )
+
+pacta_financial_timestamp <- config$pacta_finanical_timestamp
+ishares_date <- config$ishares_date
+
 # paths ------------------------------------------------------------------------
 transition_monitor_dir <- "/home/bound"
 setwd(transition_monitor_dir)
 
 working_dir <- file.path(transition_monitor_dir, "working_dir")
 
-input_dir <- "/home/pacta-data/2021Q4"
+input_dir <- file.path("/home/pacta-data/", pacta_financial_timestamp)
 output_dir <- input_dir
 
 # functions --------------------------------------------------------------------
@@ -43,9 +55,6 @@ pacta_directories <- c(
   "40_Results",
   "50_Outputs"
 )
-
-holdings_date <- "2021Q4"
-ishares_date <- "20211231"
 
 # load indices data -------------------------------------------------------
 
@@ -126,7 +135,7 @@ for (portfolio_name in portfolio_names) {
           portfolio_name = portfolio_name,
           language = "EN",
           project_code = investor_name,
-          holdings_date = holdings_date
+          holdings_date = pacta_financial_timestamp
         )
       )
     )
