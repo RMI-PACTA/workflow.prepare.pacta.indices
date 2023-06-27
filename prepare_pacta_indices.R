@@ -7,12 +7,17 @@ invisible({
   })
 })
 
+# config
+
 config <-
   config::get(
     file = "config.yml",
     config = Sys.getenv("R_CONFIG_ACTIVE"),
     use_parent = FALSE
   )
+
+pacta_financial_timestamp <- config$pacta_finanical_timestamp
+ishares_date <- config$ishares_date
 
 # paths ------------------------------------------------------------------------
 transition_monitor_dir <- "/home/bound"
@@ -50,9 +55,6 @@ pacta_directories <- c(
   "40_Results",
   "50_Outputs"
 )
-
-pacta_financial_timestamp <- config$pacta_finanical_timestamp
-ishares_date <- config$ishares_date
 
 # load indices data -------------------------------------------------------
 
