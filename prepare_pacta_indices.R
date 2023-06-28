@@ -8,6 +8,7 @@ invisible({
 })
 
 # config
+readRenviron(".env")
 
 config <-
   config::get(
