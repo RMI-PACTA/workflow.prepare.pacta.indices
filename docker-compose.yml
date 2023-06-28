@@ -3,8 +3,3 @@ services:
   indices_prep:
     build:
       context: .
-    env_file:
-      - .env
-    volumes:
-      - ${TRANSITION_MONITOR_PATH}:/home/bound
-      - ${PACTA_DATA_PATH}:/home/pacta-data/2021Q4
