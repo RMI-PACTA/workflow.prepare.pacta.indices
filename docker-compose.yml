@@ -7,4 +7,4 @@ services:
       - .env
     volumes:
       - ${TRANSITION_MONITOR_PATH}:/home/bound
-      - ${PACTA_DATA_PATH}:/home/pacta-data/2021Q4
+      - ${PACTA_DATA_PATH}:/home/pacta-data/2022Q4
