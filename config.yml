@@ -1,11 +1,41 @@
-default:
-  pacta_financial_timestamp: "2021Q4"
-  ishares_date: "20211231"
-
 2021Q4:
   pacta_financial_timestamp: "2021Q4"
   ishares_date: "20211231"
+  bonds_indices_urls: !expr |- 
+    c(
+      "iShares Global Corp Bond UCITS ETF <USD (Distributing)>" = 
+      "https://www.ishares.com/uk/individual/en/products/251813/ishares-global-corporate-bond-ucits-etf/"
+    )
+  equity_indices_urls: !expr |-
+    c(
+      "iShares Core S&P 500 UCITS ETF USD (Dist) <USD (Distributing)>" =
+      "https://www.ishares.com/uk/individual/en/products/251900/ishares-sp-500-ucits-etf-inc-fund/",
+      "iShares MSCI World UCITS ETF <USD (Distributing)>" =
+      "https://www.ishares.com/uk/individual/en/products/251881/ishares-msci-world-ucits-etf-inc-fund/",
+      "iShares MSCI EM UCITS ETF USD (Acc)" =
+      "https://www.ishares.com/uk/individual/en/products/251858/ishares-msci-emerging-markets-ucits-etf-acc-fund/",
+      "iShares MSCI ACWI UCITS ETF <USD (Accumulating)>" =
+      "https://www.ishares.com/uk/individual/en/products/251850/ishares-msci-acwi-ucits-etf/"
+    )
 
 2022Q4:
   pacta_financial_timestamp: "2022Q4"
   ishares_date: "20221230"
+  bonds_indices_urls: !expr |- 
+    c(
+      "iShares Global Corp Bond UCITS ETF <USD (Distributing)>" = 
+      "https://www.ishares.com/uk/individual/en/products/251813/ishares-global-corporate-bond-ucits-etf/"
+    )
+  equity_indices_urls: !expr |-
+    c(
+      "iShares Core S&P 500 UCITS ETF USD (Dist) <USD (Distributing)>" =
+      "https://www.ishares.com/uk/individual/en/products/251900/ishares-sp-500-ucits-etf-inc-fund/",
+      "iShares MSCI World UCITS ETF <USD (Distributing)>" =
+      "https://www.ishares.com/uk/individual/en/products/251881/ishares-msci-world-ucits-etf-inc-fund/",
+      "iShares MSCI EM UCITS ETF USD (Acc)" =
+      "https://www.ishares.com/uk/individual/en/products/251858/ishares-msci-emerging-markets-ucits-etf-acc-fund/",
+      "iShares MSCI ACWI UCITS ETF <USD (Accumulating)>" =
+      "https://www.ishares.com/uk/individual/en/products/251850/ishares-msci-acwi-ucits-etf/"
+    )
+  
+
