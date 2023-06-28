@@ -17,7 +17,7 @@ config <-
     use_parent = FALSE
   )
 
-pacta_financial_timestamp <- config$pacta_finanical_timestamp
+pacta_financial_timestamp <- config$pacta_financial_timestamp
 ishares_date <- config$ishares_date
 
 # paths ------------------------------------------------------------------------
