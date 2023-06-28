@@ -60,7 +60,7 @@ pacta_directories <- c(
 
 bonds_indices_urls <-config$bonds_indices_urls
 
-equity_indices_urls <- confi$equity_indices_urls
+equity_indices_urls <- config$equity_indices_urls
 
 ishares_indices_bonds <-
   dplyr::bind_rows(
