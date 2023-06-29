@@ -59,7 +59,7 @@ pacta_directories <- c(
 
 # load indices data -------------------------------------------------------
 
-bonds_indices_urls <-config$bonds_indices_urls
+bonds_indices_urls <- config$bonds_indices_urls
 
 equity_indices_urls <- config$equity_indices_urls
 
