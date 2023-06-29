@@ -12,8 +12,12 @@ and format them for the Transition Monitor webtool.
 ## Running Prepare PACTA Indices workflow  
 ### Required input
 
-The index preparation Dockerfile uses the 
-`transitionmonitordockerregistry/rmi_pacta` docker image as a base image. 
+The index preparation Dockerfile uses the `transitionmonitordockerregistry/rmi_pacta` docker image as a base image. Pulling this image requires access to the Azure docker registry `transitionmonitordockerregistry`. 
+
+You can log-in to this registry by calling:
+``` bash
+az acr login --name transitionmonitordockerregistry
+``` 
 
 ### Running in Docker
 The simplest way to run the data preparation process is by using docker. 
