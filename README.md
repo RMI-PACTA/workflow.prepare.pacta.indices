@@ -12,10 +12,12 @@ and format them for the Transition Monitor webtool.
 ## Running Prepare PACTA Indices workflow  
 ### Required input
 
-Preparing indices requires all PACTA input datasets, as prepared by 
-`RMI-PACTA/pacta.data.preparation`.
+The index preparation Dockerfile uses the `transitionmonitordockerregistry/rmi_pacta` docker image as a base image. Pulling this image requires access to the Azure docker registry `transitionmonitordockerregistry`. 
 
-It also requires access to the repo `RMI-PACTA/workflow.transition.monitor`.
+You can log-in to this registry by calling:
+``` bash
+az acr login --name transitionmonitordockerregistry
+``` 
 
 ### Running in Docker
 The simplest way to run the data preparation process is by using docker. 
@@ -23,11 +25,11 @@ The simplest way to run the data preparation process is by using docker.
 First, create a `.env` file in the root directory with the following fields: 
 
 ``` env
-TRANSITION_MONITOR_PATH=PATH/TO/workflow.transition.monitor
-PACTA_DATA_PATH=PATH/TO/pacta-data/2021Q4
-R_CONFIG_ACTIVE=2022Q4
+PACTA_DATA_PATH=PATH/TO/pacta-data/YYYYQQ
+R_CONFIG_ACTIVE=YYYYQQ
 ```
-The `R_CONFIG_ACTIVE` variable should point to the appropriate set of configuration values specified in the `config.yml` file. 
+The `R_CONFIG_ACTIVE` variable should point to the appropriate set of 
+configuration values specified in the `config.yml` file. 
 
 Once these variables have been set, simply run 
 

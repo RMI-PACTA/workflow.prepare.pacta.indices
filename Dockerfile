@@ -7,8 +7,8 @@
 # https://packagemanager.rstudio.com/client/#/repos/2/overview
 # https://packagemanager.rstudio.com/cran/__linux__/jammy/2023-03-31+MbiAEzHt
 
-
-FROM --platform=linux/amd64 rocker/r-ver:4.2.3
+ARG BASE_IMAGE=transitionmonitordockerregistry.azurecr.io/rmi_pacta:0.0.0.9080
+FROM --platform=linux/amd64 $BASE_IMAGE
 ARG CRAN_REPO="https://packagemanager.rstudio.com/cran/__linux__/jammy/2023-03-31+MbiAEzHt"
 RUN echo "options(repos = c(CRAN = '$CRAN_REPO'))" >> "${R_HOME}/etc/Rprofile.site"
 
@@ -40,9 +40,6 @@ RUN Rscript -e " \
 
 # copy in workflow repo
 COPY . /workflow.prepare.pacta.indices
-
-RUN mkdir pacta-data
-RUN mkdir bound
 
 WORKDIR /workflow.prepare.pacta.indices
 
