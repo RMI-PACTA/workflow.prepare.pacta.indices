@@ -25,7 +25,7 @@ The simplest way to run the data preparation process is by using docker.
 First, create a `.env` file in the root directory with the following fields: 
 
 ``` env
-PACTA_DATA_PATH=PATH/TO/pacta-data/YYYYQQ
+PACTA_DATA_PATH=PATH/TO/pacta-data
 R_CONFIG_ACTIVE=YYYYQQ
 ```
 The `R_CONFIG_ACTIVE` variable should point to the appropriate set of 
