@@ -21,12 +21,12 @@ pacta_financial_timestamp <- config$pacta_financial_timestamp
 ishares_date <- config$ishares_date
 
 # paths ------------------------------------------------------------------------
-transition_monitor_dir <- "/home/bound"
+transition_monitor_dir <- "/bound"
 setwd(transition_monitor_dir)
 
 working_dir <- file.path(transition_monitor_dir, "working_dir")
 
-input_dir <- file.path("/home/pacta-data/", pacta_financial_timestamp)
+input_dir <- file.path("/pacta-data/", pacta_financial_timestamp)
 output_dir <- input_dir
 
 # functions --------------------------------------------------------------------
