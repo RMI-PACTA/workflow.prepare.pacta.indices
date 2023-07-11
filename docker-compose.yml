@@ -6,5 +6,4 @@ services:
     env_file:
       - .env
     volumes:
-      - ${TRANSITION_MONITOR_PATH}:/home/bound
-      - ${PACTA_DATA_PATH}:/home/pacta-data
+      - ${PACTA_DATA_PATH}:/pacta-data

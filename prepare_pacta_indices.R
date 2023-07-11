@@ -21,12 +21,12 @@ pacta_financial_timestamp <- config$pacta_financial_timestamp
 ishares_date <- config$ishares_date
 
 # paths ------------------------------------------------------------------------
-transition_monitor_dir <- "/home/bound"
+transition_monitor_dir <- "/bound"
 setwd(transition_monitor_dir)
 
 working_dir <- file.path(transition_monitor_dir, "working_dir")
 
-input_dir <- file.path("/home/pacta-data/", pacta_financial_timestamp)
+input_dir <- file.path("/pacta-data/", pacta_financial_timestamp)
 output_dir <- input_dir
 
 # functions --------------------------------------------------------------------
@@ -141,11 +141,9 @@ for (portfolio_name in portfolio_names) {
     file.path(working_dir, "20_Raw_Inputs", paste0(portfolio_name, ".csv"))
   )
 
-  portfolio_name_ref_all <- portfolio_name
-
   cli::cli_alert_info("running PACTA on: {.emph {portfolio_name}}")
-  source("/home/bound/web_tool_script_1.R", local = TRUE)
-  source("/home/bound/web_tool_script_2.R", local = TRUE)
+system(paste0("Rscript --vanilla /bound/web_tool_script_1.R ", "'", portfolio_name, "'"))
+system(paste0("Rscript --vanilla /bound/web_tool_script_2.R ", "'", portfolio_name, "'"))
 
 
   audit_file <- file.path(working_dir, "30_Processed_Inputs", portfolio_name, "audit_file.rds")
