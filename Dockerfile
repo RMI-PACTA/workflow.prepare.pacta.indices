@@ -23,20 +23,13 @@ RUN apt-get update \
 # install R package dependencies
 RUN Rscript -e "install.packages('pak')"
 
-# install PACTA R packages
-RUN Rscript -e "pak::pkg_install(pkg = 'RMI-PACTA/pacta.data.scraping')"
-RUN Rscript -e "pak::pkg_install(pkg = 'RMI-PACTA/pacta.portfolio.import')"
-RUN Rscript -e "pak::pkg_install(pkg = 'RMI-PACTA/pacta.portfolio.allocate')"
-RUN Rscript -e "pak::pkg_install(pkg = 'RMI-PACTA/pacta.portfolio.audit')"
-RUN Rscript -e "pak::pkg_install(pkg = 'RMI-PACTA/pacta.portfolio.utils')"
+# Install R deopendencies
+COPY DESCRIPTION /workflow.prepare.pacta.indices/DESCRIPTION
 
-# copy imports.R separately from rest of deps to optimize caching
-COPY imports.R /workflow.prepare.pacta.indices/imports.R
-
-RUN Rscript -e " \
-    source('/workflow.prepare.pacta.indices/imports.R'); \
-    install.packages(requirements) \
-"
+# install R package dependencies
+RUN Rscript -e "\
+  deps <- pak::local_install_deps(root = '/workflow.prepare.pacta.indices'); \
+  "
 
 # copy in workflow repo
 COPY . /workflow.prepare.pacta.indices

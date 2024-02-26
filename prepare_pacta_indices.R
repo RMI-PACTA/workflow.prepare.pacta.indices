@@ -1,10 +1,9 @@
 # necessary packages -----------------------------------------------------------
 # please add all dependencies to imports.R
-source("./imports.R")
-invisible({
-  lapply(requirements, function(pkg) {
-    suppressPackageStartupMessages(library(pkg, character.only = TRUE))
-  })
+suppressPackageStartupMessages({
+  library("dplyr")
+  library("purrr")
+  library("readr")
 })
 
 # config
