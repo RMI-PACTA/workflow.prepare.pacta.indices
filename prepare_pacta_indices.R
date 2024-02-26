@@ -1,5 +1,8 @@
 # necessary packages -----------------------------------------------------------
 # please add all dependencies to imports.R
+suppressPackageStartupMessages({
+  library("dplyr")
+})
 
 # config
 readRenviron(".env")
@@ -130,7 +133,7 @@ for (portfolio_name in portfolio_names) {
     )
   )
 
-  write_csv(
+  readr::write_csv(
     portfolio,
     file.path(working_dir, "20_Raw_Inputs", paste0(portfolio_name, ".csv"))
   )
@@ -184,7 +187,7 @@ output_files <- list.files(
 
 combined <-
   output_files %>%
-  map_dfr(readRDS)
+  purrr::map_dfr(readRDS)
 
 unlink(output_files)
 
@@ -217,7 +220,7 @@ output_files_emissions <- list.files(
 )
 
 combined_emissions <- output_files_emissions %>%
-  map_dfr(readRDS)
+  purrr::map_dfr(readRDS)
 
 unlink(output_files_emissions)
 
@@ -250,7 +253,7 @@ output_files_audit <- list.files(
 )
 
 combined_audit <- output_files_audit %>%
-  map_dfr(readRDS)
+  purrr::map_dfr(readRDS)
 
 unlink(output_files_audit)
 
