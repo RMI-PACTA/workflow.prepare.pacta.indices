@@ -118,13 +118,19 @@ ishares_indices <- bind_rows(ishares_indices_bonds, ishares_indices_equity)
 # -------------------------------------------------------------------------
 
 temporary_directory <- tempdir()
+logger::log_debug("temporary_directory for outputs: {temporary_directory}.")
 
 portfolio_names <- unique(ishares_indices$portfolio_name)
+logger::log_info("portfolio_names: {portfolio_names}.")
 
 for (portfolio_name in portfolio_names) {
+  logger::log_info("Processing portfolio: {portfolio_name}.")
+
+  logger::log_debug("Creating directories for portfolio.")
   fs::dir_delete(working_dir)
   fs::dir_create(file.path(working_dir, pacta_directories))
 
+  logger::log_trace("Filtering index data to portfolio: {portfolio_name}.")
   portfolio <-
     ishares_indices %>%
     filter(portfolio_name == .env$portfolio_name)
@@ -132,9 +138,11 @@ for (portfolio_name in portfolio_names) {
   investor_name <- unique(portfolio$investor_name)
 
   if (length(investor_name) != 1L) {
+    logger::log_error("Multiple investor names found in data: {investor_name}.")
     stop("Please ensure that each index dataset contains a single unique value for `investor_name`")
   }
 
+  logger::log_debug("Defining portfolio parameters.")
   config_list <-
     list(
       default = list(
@@ -148,23 +156,32 @@ for (portfolio_name in portfolio_names) {
       )
     )
 
+  prameters_file <- file.path(
+    working_dir,
+    "10_Parameter_File",
+    paste0(portfolio_name, "_PortfolioParameters.yml")
+  )
+  logger::log_debug("Writing portfolio parameters to file: \"{parameters_file}\".")
   yaml::write_yaml(
     config_list,
-    file = file.path(
-      working_dir,
-      "10_Parameter_File",
-      paste0(portfolio_name, "_PortfolioParameters.yml")
-    )
+    file = parameters_file
   )
 
+  portfolio_file <- file.path(
+    working_dir,
+    "20_Raw_Inputs",
+    paste0(portfolio_name, ".csv")
+  )
+  logger::log_debug("Writing portfolio data to file: \"{portfolio_file}\".")
   write_csv(
     portfolio,
-    file.path(working_dir, "20_Raw_Inputs", paste0(portfolio_name, ".csv"))
+    portfolio_file
   )
 
-  cli::cli_alert_info("running PACTA on: {.emph {portfolio_name}}")
-system(paste0("Rscript --vanilla /bound/web_tool_script_1.R ", "'", portfolio_name, "'"))
-system(paste0("Rscript --vanilla /bound/web_tool_script_2.R ", "'", portfolio_name, "'"))
+  logger:log_info("running PACTA on: {portfolio_name}.")
+  system(paste0("Rscript --vanilla /bound/web_tool_script_1.R ", "'", portfolio_name, "'"))
+  system(paste0("Rscript --vanilla /bound/web_tool_script_2.R ", "'", portfolio_name, "'"))
+  logger:log_info("finished running PACTA on: {portfolio_name}.")
 
 
   audit_file <- file.path(working_dir, "30_Processed_Inputs", portfolio_name, "audit_file.rds")
@@ -179,25 +196,49 @@ system(paste0("Rscript --vanilla /bound/web_tool_script_2.R ", "'", portfolio_na
   bond_out <- file.path(temporary_directory, paste0(portfolio_name, "_", basename(bond_result)))
 
   if (file.exists(audit_file)) {
+    logger::log_debug("Reading audit file: {audit_file}.")
     audit_ind <- readRDS(audit_file)
     audit_ind <- add_inv_and_port_names_if_needed(audit_ind, investor_name, portfolio_name)
+    logger::log_debug("Rewriting audit file results to temporary_directory: {audit_out}.")
     saveRDS(audit_ind, audit_out)
+  } else {
+    logger::log_warn("Audit file not found for portfolio {portfolio_name}: {audit_file}.")
+    warning("Audit file not found.")
   }
+  
   if (file.exists(emissions)) {
+    logger::log_debug("Reading emissions file: {emissions}.")
     emissions_ind <- readRDS(emissions)
     emissions_ind <- add_inv_and_port_names_if_needed(emissions_ind, investor_name, portfolio_name)
+    logger::log_debug("Rewriting emissions file results to temporary_directory: {emissions_out}.")
     saveRDS(emissions_ind, emissions_out)
+  } else {
+    logger::log_warn("Emissions file not found for portfolio {portfolio_name}: {emissions}.")
+    warning("Emissions file not found.")
   }
+
   if (file.exists(eq_result)) {
+    logger::log_debug("Reading equity results file: {eq_result}.")
     eq_result_ind <- readRDS(eq_result)
     eq_result_ind <- add_inv_and_port_names_if_needed(eq_result_ind, investor_name, portfolio_name)
+    logger::log_debug("Rewriting equity results file to temporary_directory: {eq_out}.")
     saveRDS(eq_result_ind, eq_out)
+  } else {
+    logger::log_warn("Equity results file not found for portfolio {portfolio_name}: {eq_result}.")
+    warning("Equity results file not found.")
   }
+
   if (file.exists(bond_result)) {
+    logger::log_debug("Reading bond results file: {bond_result}.")
     bond_result_ind <- readRDS(bond_result)
     bond_result_ind <- add_inv_and_port_names_if_needed(bond_result_ind, investor_name, portfolio_name)
+    logger::log_debug("Rewriting bond results file to temporary_directory: {bond_out}.")
     saveRDS(bond_result_ind, bond_out)
+  } else {
+    logger::log_warn("Bond results file not found for portfolio {portfolio_name}: {bond_result}.")
+    warning("Bond results file not found.")
   }
+
 }
 
 
