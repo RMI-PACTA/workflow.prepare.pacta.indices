@@ -1,10 +1,5 @@
 # necessary packages -----------------------------------------------------------
 # please add all dependencies to imports.R
-suppressPackageStartupMessages({
-  library("dplyr")
-  library("purrr")
-  library("readr")
-})
 
 # config
 readRenviron(".env")
@@ -105,7 +100,7 @@ for (portfolio_name in portfolio_names) {
 
   portfolio <-
     ishares_indices %>%
-    filter(portfolio_name == .env$portfolio_name)
+    dplyr::filter(portfolio_name == .env$portfolio_name)
 
   investor_name <- unique(portfolio$investor_name)
 
@@ -205,11 +200,11 @@ combined <-
   ))
 
 combined %>%
-  filter(!grepl("Global Corp Bond", portfolio_name)) %>%
+  dplyr::filter(!grepl("Global Corp Bond", portfolio_name)) %>%
   saveRDS(file.path(output_dir, "Indices_equity_results_portfolio.rds"))
 
 combined %>%
-  filter(grepl("Global Corp Bond", portfolio_name)) %>%
+  dplyr::filter(grepl("Global Corp Bond", portfolio_name)) %>%
   saveRDS(file.path(output_dir, "Indices_bonds_results_portfolio.rds"))
 
 # -------------------------------------------------------------------------
@@ -238,11 +233,11 @@ combined_emissions <-
   ))
 
 combined_emissions %>%
-  filter(!grepl("Global Corp Bond", portfolio_name)) %>%
+  dplyr::filter(!grepl("Global Corp Bond", portfolio_name)) %>%
   saveRDS(file.path(output_dir, "Indices_equity_emissions.rds"))
 
 combined_emissions %>%
-  filter(grepl("Global Corp Bond", portfolio_name)) %>%
+  dplyr::filter(grepl("Global Corp Bond", portfolio_name)) %>%
   saveRDS(file.path(output_dir, "Indices_bonds_emissions.rds"))
 
 # -------------------------------------------------------------------------
@@ -271,9 +266,9 @@ combined_audit <-
   ))
 
 combined_audit %>%
-  filter(!grepl("Global Corp Bond", portfolio_name)) %>%
+  dplyr::filter(!grepl("Global Corp Bond", portfolio_name)) %>%
   saveRDS(file.path(output_dir, "Indices_equity_audit.rds"))
 
 combined_audit %>%
-  filter(grepl("Global Corp Bond", portfolio_name)) %>%
+  dplyr::filter(grepl("Global Corp Bond", portfolio_name)) %>%
   saveRDS(file.path(output_dir, "Indices_bonds_audit.rds"))
