@@ -11,14 +11,6 @@ FROM transitionmonitordockerregistry.azurecr.io/rmi_pacta:2021q4_1.0.0
 ARG CRAN_REPO="https://packagemanager.posit.co/cran/__linux__/jammy/2023-10-30"
 RUN echo "options(repos = c(CRAN = '$CRAN_REPO'))" >> "${R_HOME}/etc/Rprofile.site"
 
-# install system dependencies
-ARG SYS_DEPS="git"
-
-RUN apt-get update \
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends $SYS_DEPS \
-    && chmod -R a+rwX /root \
-    && rm -rf /var/lib/apt/lists/*
-
 # install R package dependencies
 RUN Rscript -e "install.packages('pak')"
 
