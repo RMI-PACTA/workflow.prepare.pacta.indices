@@ -19,7 +19,7 @@ readRenviron(".env")
 config <-
   config::get(
     file = "config.yml",
-    config = Sys.getenv("R_CONFIG_ACTIVE."),
+    config = Sys.getenv("R_CONFIG_ACTIVE"),
     use_parent = FALSE
   )
 
