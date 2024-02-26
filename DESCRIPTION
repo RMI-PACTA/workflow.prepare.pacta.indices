@@ -30,6 +30,17 @@ Imports:
     cli,
     dplyr,
     fs,
+    pacta.data.scraping,
+    pacta.portfolio.allocate,
+    pacta.portfolio.audit,
+    pacta.portfolio.import,
+    pacta.portfolio.utils,
     purrr,
     readr,
     yaml
+Remotes:
+    RMI-PACTA/pacta.data.scraping,
+    RMI-PACTA/pacta.portfolio.allocate,
+    RMI-PACTA/pacta.portfolio.audit,
+    RMI-PACTA/pacta.portfolio.import,
+    RMI-PACTA/pacta.portfolio.utils
