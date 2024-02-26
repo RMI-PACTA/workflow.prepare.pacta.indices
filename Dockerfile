@@ -8,8 +8,7 @@
 # https://packagemanager.rstudio.com/cran/__linux__/jammy/2023-03-31+MbiAEzHt
 
 FROM ghcr.io/rmi-pacta/workflow.transition.monitor:main
-ARG CRAN_REPO="https://packagemanager.posit.co/cran/__linux__/jammy/2023-10-30"
-RUN echo "options(repos = c(CRAN = '$CRAN_REPO'))" >> "${R_HOME}/etc/Rprofile.site"
+# inherit CRAN REPO and R options from base image
 
 # Install R dependencies
 COPY DESCRIPTION /workflow.prepare.pacta.indices/DESCRIPTION
