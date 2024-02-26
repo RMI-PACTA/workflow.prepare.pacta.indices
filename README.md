@@ -10,14 +10,17 @@ The goal of `workflow.prepare.pacta.indices` is to run indices through PACTA,
 and format them for the Transition Monitor webtool. 
 
 ## Running Prepare PACTA Indices workflow  
+
 ### Required input
 
-The index preparation Dockerfile uses the `transitionmonitordockerregistry/rmi_pacta` docker image as a base image. Pulling this image requires access to the Azure docker registry `transitionmonitordockerregistry`. 
+The index preparation Dockerfile uses the `ghcr.io/rmi-pacta/workflow.transition.monitor` docker image as a base image.
+Although the image is public, pullang public images ffrom GHCR requires authentication.
 
-You can log-in to this registry by calling:
+You can authenticate to GHCR with any valid GitHub Personal Access token
+
 ``` bash
-az acr login --name transitionmonitordockerregistry
-``` 
+echo $GITHUB_PAT | docker login ghcr.io -u <USERNAME> --password-stdin
+```
 
 ### Running in Docker
 The simplest way to run the data preparation process is by using docker. 
