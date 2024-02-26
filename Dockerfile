@@ -20,7 +20,7 @@ RUN Rscript -e "\
   "
 
 # copy in workflow repo
-COPY prepare_pacta_indices.R /workflow.prepare.pacta.indices/prepare_pacta_indices.R
+COPY prepare_pacta_indices.R .env config.yml /workflow.prepare.pacta.indices/
 
 WORKDIR /workflow.prepare.pacta.indices
 
