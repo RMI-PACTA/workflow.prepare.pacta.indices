@@ -250,12 +250,15 @@ output_files <- list.files(
   full.names = TRUE
 )
 
+logger::log_info("Combining results files.")
 combined <-
   output_files %>%
   map_dfr(readRDS)
 
+logger::log_debug("Unlinking temporary results files.")
 unlink(output_files)
 
+logger::log_debug("Cleaning portfolio names in combined results.")
 combined <-
   combined %>%
   mutate(portfolio_name = case_when(
@@ -267,13 +270,18 @@ combined <-
     TRUE ~ portfolio_name
   ))
 
+
+equity_results_path <- file.path(output_dir, "Indices_equity_results_portfolio.rds")
+logger::log_info("Saving combined equity results to: {equity_results_path}.")
 combined %>%
   filter(!grepl("Global Corp Bond", portfolio_name)) %>%
-  saveRDS(file.path(output_dir, "Indices_equity_results_portfolio.rds"))
+  saveRDS(equity_results_path)
 
+bonds_results_path <- file.path(output_dir, "Indices_bonds_results_portfolio.rds")
+logger::log_info("Saving combined bond results to: {bonds_results_path}.")
 combined %>%
   filter(grepl("Global Corp Bond", portfolio_name)) %>%
-  saveRDS(file.path(output_dir, "Indices_bonds_results_portfolio.rds"))
+  saveRDS(bonds_results_path)
 
 # -------------------------------------------------------------------------
 # output emissions data
@@ -284,11 +292,14 @@ output_files_emissions <- list.files(
   full.names = TRUE
 )
 
+logger::log_info("Combining emissions files.")
 combined_emissions <- output_files_emissions %>%
   map_dfr(readRDS)
 
+logger::log_debug("Unlinking temporary emissions files.")
 unlink(output_files_emissions)
 
+logger::log_debug("Cleaning portfolio names in combined emissions.")
 combined_emissions <-
   combined_emissions %>%
   mutate(portfolio_name = case_when(
@@ -300,13 +311,17 @@ combined_emissions <-
     TRUE ~ portfolio_name
   ))
 
+equity_emissions_path <- file.path(output_dir, "Indices_equity_emissions.rds")
+logger::log_info("Saving combined equity emissions to: {equity_emissions_path}.")
 combined_emissions %>%
   filter(!grepl("Global Corp Bond", portfolio_name)) %>%
-  saveRDS(file.path(output_dir, "Indices_equity_emissions.rds"))
+  saveRDS(equity_emissions_path)
 
+bonds_emissions_path <- file.path(output_dir, "Indices_bonds_emissions.rds")
+logger::log_info("Saving combined bond emissions to: {bonds_emissions_path}.")
 combined_emissions %>%
   filter(grepl("Global Corp Bond", portfolio_name)) %>%
-  saveRDS(file.path(output_dir, "Indices_bonds_emissions.rds"))
+  saveRDS(bonds_emissions_path)
 
 # -------------------------------------------------------------------------
 # output audit file
@@ -317,11 +332,14 @@ output_files_audit <- list.files(
   full.names = TRUE
 )
 
+logger::log_info("Combining audit files.")
 combined_audit <- output_files_audit %>%
   map_dfr(readRDS)
 
+logger::log_debug("Unlinking temporary audit files.")
 unlink(output_files_audit)
 
+logger::log_debug("Cleaning portfolio names in combined audit.")
 combined_audit <-
   combined_audit %>%
   mutate(portfolio_name = case_when(
@@ -333,10 +351,16 @@ combined_audit <-
     TRUE ~ portfolio_name
   ))
 
+equity_audit_path <- file.path(output_dir, "Indices_equity_audit.rds")
+logger::log_info("Saving combined equity audit to: {equity_audit_path}.")
 combined_audit %>%
   filter(!grepl("Global Corp Bond", portfolio_name)) %>%
-  saveRDS(file.path(output_dir, "Indices_equity_audit.rds"))
+  saveRDS(equity_audit_path)
 
+bonds_audit_path <- file.path(output_dir, "Indices_bonds_audit.rds")
+logger::log_info("Saving combined bond audit to: {bonds_audit_path}.")
 combined_audit %>%
   filter(grepl("Global Corp Bond", portfolio_name)) %>%
-  saveRDS(file.path(output_dir, "Indices_bonds_audit.rds"))
+  saveRDS(bonds_audit_path)
+
+logger::log_info("Finished prepare_pacta_indices.R.")
