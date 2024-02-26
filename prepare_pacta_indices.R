@@ -1,5 +1,11 @@
+logger::log_threshold(Sys.getenv("LOG_LEVEL", ifelse(interactive(), "FATAL", "INFO")))
+logger::log_formatter(logger::formatter_glue)
+
+logger::log_info("prepare_pacta_indices.R.")
+
 # necessary packages -----------------------------------------------------------
 # please add all dependencies to imports.R
+logger::log_info("Loading necessary packages.")
 suppressPackageStartupMessages({
   library("dplyr")
   library("purrr")
@@ -7,28 +13,38 @@ suppressPackageStartupMessages({
 })
 
 # config
+logger::log_info("Loading config.")
 readRenviron(".env")
 
 config <-
   config::get(
     file = "config.yml",
-    config = Sys.getenv("R_CONFIG_ACTIVE"),
+    config = Sys.getenv("R_CONFIG_ACTIVE."),
     use_parent = FALSE
   )
 
 pacta_financial_timestamp <- config$pacta_financial_timestamp
+logger::log_debug("pacta_financial_timestamp: {pacta_financial_timestamp}.")
 ishares_date <- config$ishares_date
+logger::log_debug("ishares_date: {ishares_date}.")
 
 # paths ------------------------------------------------------------------------
+logger::log_info("Setting paths.")
+
 transition_monitor_dir <- "/bound"
+logger::log_info("changing directory to transition_monitor_dir: {transition_monitor_dir}.")
 setwd(transition_monitor_dir)
 
 working_dir <- file.path(transition_monitor_dir, "working_dir")
+logger::log_debug("working_dir: {working_dir}.")
 
 input_dir <- file.path("/pacta-data/", pacta_financial_timestamp)
+logger::log_debug("input_dir: {input_dir}.")
 output_dir <- input_dir
+logger::log_debug("output_dir: {output_dir}.")
 
 # functions --------------------------------------------------------------------
+logger::log_info("Defining functions")
 add_inv_and_port_names_if_needed <- function(data,
                                              investor_name,
                                              portfolio_name) {
@@ -57,11 +73,15 @@ pacta_directories <- c(
 )
 
 # load indices data -------------------------------------------------------
+logger::log_info("Scraping indices data")
 
 bonds_indices_urls <- config$bonds_indices_urls
+logger::log_debug("bonds_indices_urls: {bonds_indices_urls}.")
 
 equity_indices_urls <- config$equity_indices_urls
+logger::log_debug("equity_indices_urls: {equity_indices_urls}.")
 
+logger::log_debug("Scraping iShares indices bonds data.")
 ishares_indices_bonds <-
   dplyr::bind_rows(
     lapply(
@@ -76,6 +96,7 @@ ishares_indices_bonds <-
   ) %>%
   pacta.data.scraping::process_ishares_index_data()
 
+logger::log_debug("Scraping iShares indices equity data.")
 ishares_indices_equity <-
   dplyr::bind_rows(
     lapply(
@@ -90,6 +111,7 @@ ishares_indices_equity <-
   ) %>%
   pacta.data.scraping::process_ishares_index_data()
 
+logger::log_debug("Combining iShares indices data.")
 ishares_indices <- bind_rows(ishares_indices_bonds, ishares_indices_equity)
 
 
