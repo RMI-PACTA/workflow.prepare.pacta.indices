@@ -14,7 +14,7 @@ and format them for the Transition Monitor webtool.
 ### Required input
 
 The index preparation Dockerfile uses the `ghcr.io/rmi-pacta/workflow.transition.monitor` docker image as a base image.
-Although the image is public, pullang public images ffrom GHCR requires authentication.
+Although the image is public, pulling public images from GHCR requires authentication.
 
 You can authenticate to GHCR with any valid GitHub Personal Access token
 
