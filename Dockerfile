@@ -11,28 +11,18 @@ FROM ghcr.io/rmi-pacta/workflow.transition.monitor:main
 ARG CRAN_REPO="https://packagemanager.posit.co/cran/__linux__/jammy/2023-10-30"
 RUN echo "options(repos = c(CRAN = '$CRAN_REPO'))" >> "${R_HOME}/etc/Rprofile.site"
 
-# install system dependencies
-ARG SYS_DEPS="git"
-
-RUN apt-get update \
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends $SYS_DEPS \
-    && chmod -R a+rwX /root \
-    && rm -rf /var/lib/apt/lists/*
-
-# install R package dependencies
-RUN Rscript -e "install.packages('pak')"
-
-# Install R deopendencies
+# Install R dependencies
 COPY DESCRIPTION /workflow.prepare.pacta.indices/DESCRIPTION
 
 # install R package dependencies
 RUN Rscript -e "\
+  install.packages('pak'); \
   deps <- pak::local_install_deps(root = '/workflow.prepare.pacta.indices'); \
   "
 
 # copy in workflow repo
-COPY . /workflow.prepare.pacta.indices
+COPY prepare_pacta_indices.R /workflow.prepare.pacta.indices/prepare_pacta_indices.R
 
 WORKDIR /workflow.prepare.pacta.indices
 
-CMD Rscript --vanilla /workflow.prepare.pacta.indices/prepare_pacta_indices.R
+CMD ["Rscript", "--vanilla", "/workflow.prepare.pacta.indices/prepare_pacta_indices.R"]
