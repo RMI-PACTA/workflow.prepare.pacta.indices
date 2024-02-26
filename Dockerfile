@@ -11,7 +11,7 @@ FROM transitionmonitordockerregistry.azurecr.io/rmi_pacta:2021q4_1.0.0
 ARG CRAN_REPO="https://packagemanager.posit.co/cran/__linux__/jammy/2023-10-30"
 RUN echo "options(repos = c(CRAN = '$CRAN_REPO'))" >> "${R_HOME}/etc/Rprofile.site"
 
-# Install R deopendencies
+# Install R dependencies
 COPY DESCRIPTION /workflow.prepare.pacta.indices/DESCRIPTION
 
 # install R package dependencies
@@ -21,7 +21,7 @@ RUN Rscript -e "\
   "
 
 # copy in workflow repo
-COPY . /workflow.prepare.pacta.indices
+COPY prepare_pacta_indices.R /workflow.prepare.pacta.indices/prepare_pacta_indices.R
 
 WORKDIR /workflow.prepare.pacta.indices
 
