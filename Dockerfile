@@ -11,14 +11,12 @@ FROM transitionmonitordockerregistry.azurecr.io/rmi_pacta:2021q4_1.0.0
 ARG CRAN_REPO="https://packagemanager.posit.co/cran/__linux__/jammy/2023-10-30"
 RUN echo "options(repos = c(CRAN = '$CRAN_REPO'))" >> "${R_HOME}/etc/Rprofile.site"
 
-# install R package dependencies
-RUN Rscript -e "install.packages('pak')"
-
 # Install R deopendencies
 COPY DESCRIPTION /workflow.prepare.pacta.indices/DESCRIPTION
 
 # install R package dependencies
 RUN Rscript -e "\
+  install.packages('pak'); \
   deps <- pak::local_install_deps(root = '/workflow.prepare.pacta.indices'); \
   "
 
