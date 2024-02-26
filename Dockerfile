@@ -7,8 +7,7 @@
 # https://packagemanager.rstudio.com/client/#/repos/2/overview
 # https://packagemanager.rstudio.com/cran/__linux__/jammy/2023-03-31+MbiAEzHt
 
-ARG BASE_IMAGE=transitionmonitordockerregistry.azurecr.io/rmi_pacta:2021q4_1.0.0
-FROM --platform=linux/amd64 $BASE_IMAGE
+FROM ghcr.io/rmi-pacta/workflow.transition.monitor:main
 ARG CRAN_REPO="https://packagemanager.posit.co/cran/__linux__/jammy/2023-10-30"
 RUN echo "options(repos = c(CRAN = '$CRAN_REPO'))" >> "${R_HOME}/etc/Rprofile.site"
 
