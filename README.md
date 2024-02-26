@@ -22,7 +22,7 @@ az acr login --name transitionmonitordockerregistry
 ### Running in `docker-compose`
 
 0. *Optional, but recommended.* 
-    Make a `,env` file.
+    Make a `.env` file.
     This file will preserve the environment variables that control behavior on the host machine, as well as specifying the configuration to use.
     This file can be replaced or overridden by specifying environment variables on the host machine, or as part of invoking docker.
     For more information on specifying environment variables to `docker-compose`, please refer to the [documentation](https://docs.docker.com/compose/environment-variables/envvars-precedence/).
