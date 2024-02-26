@@ -6,9 +6,6 @@ suppressPackageStartupMessages({
   library("readr")
 })
 
-# config
-readRenviron(".env")
-
 config <-
   config::get(
     file = "config.yml",
