@@ -25,4 +25,4 @@ COPY prepare_pacta_indices.R /workflow.prepare.pacta.indices/prepare_pacta_indic
 
 WORKDIR /workflow.prepare.pacta.indices
 
-CMD Rscript --vanilla /workflow.prepare.pacta.indices/prepare_pacta_indices.R
+CMD ["Rscript", "--vanilla", "/workflow.prepare.pacta.indices/prepare_pacta_indices.R"]
