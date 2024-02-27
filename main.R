@@ -1,7 +1,7 @@
 logger::log_threshold(Sys.getenv("LOG_LEVEL", ifelse(interactive(), "FATAL", "INFO")))
 logger::log_formatter(logger::formatter_glue)
 
-logger::log_info("prepare_pacta_indices.R.")
+logger::log_info("main.R.")
 
 # necessary packages -----------------------------------------------------------
 # please add all dependencies to imports.R
@@ -361,4 +361,4 @@ combined_audit %>%
   filter(grepl("Global Corp Bond", portfolio_name)) %>%
   saveRDS(bonds_audit_path)
 
-logger::log_info("Finished prepare_pacta_indices.R.")
+logger::log_info("Finished main.R.")
