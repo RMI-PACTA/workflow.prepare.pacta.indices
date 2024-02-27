@@ -38,7 +38,21 @@ logger::log_debug("working_dir: {working_dir}.")
 input_dir <- file.path("/pacta-data/", pacta_financial_timestamp)
 logger::log_debug("input_dir: {input_dir}.")
 
-output_dir <- file.path("/mnt/outputs")
+output_home <- file.path("/mnt/outputs")
+stopifnot(dir.exists(output_home))
+
+system_timestamp <- format(
+  Sys.time(),
+  format = "%Y%m%dT%H%M%SZ",
+  tz = "UTC"
+)
+output_dir <- file.path(output_home, paste(pacta_financial_timestamp, system_timestamp, sep = "_"))
+
+if (dir.exists(output_dir)) {
+  warning("Output directory exists. Files may be overwritten.")
+} else {
+  dir.create(output_dir, recursive = TRUE)
+}
 logger::log_debug("output_dir: {output_dir}.")
 
 # functions --------------------------------------------------------------------
