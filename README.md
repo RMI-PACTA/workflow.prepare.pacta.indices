@@ -34,10 +34,12 @@ echo $GITHUB_PAT | docker login ghcr.io -u <USERNAME> --password-stdin
     ``` env
     PACTA_DATA_PATH=PATH/TO/pacta-data
     R_CONFIG_ACTIVE=YYYYQQ
+    LOG_LEVEL=DEBUG
     ```
     
     Where `R_CONFIG_ACTIVE` is a top-level key from `config.yml`.
     The `PACTA_DATA_PATH` variable should point to an appropriate directory with read access on the host system that contains a version of the PACTA analysis inputs for the desired quarter.
+    `LOG_LEVEL` sets the verbosity of logging messages (using standard `log4j` log levels)
 
 1. Run `docker-compose`
 
