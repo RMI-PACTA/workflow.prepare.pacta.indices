@@ -39,4 +39,5 @@ Once these variables have been set, simply run
 docker-compose up --build
 ```
 
-and the prepared indices will automatically populate a timestamped sub-directory in `OUTPUT_PATH`.
+and the prepared indices will automatically populate in the folder 
+`PACTA_DATA_PATH`.
