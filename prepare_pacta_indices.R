@@ -35,7 +35,7 @@ system_timestamp <- format(
   format = "%Y%m%dT%H%M%SZ",
   tz = "UTC"
 )
-output_dir <- file.path(output_dir, paste(Sys.getenv("R_CONFIG_ACTIVE"), system_timestamp, sep = "_"))
+output_dir <- file.path(output_dir, paste(pacta_financial_timestamp, system_timestamp, sep = "_"))
 
 if (dir.exists(output_dir)) {
   warning("Output directory exists. Files may be overwritten.")
