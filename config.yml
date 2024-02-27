@@ -1,9 +1,9 @@
 default:
   pacta_financial_timestamp: "2021Q4"
   ishares_date: "20211231"
-  bonds_indices_urls: !expr |- 
+  bonds_indices_urls: !expr |-
     c(
-      "iShares Global Corp Bond UCITS ETF <USD (Distributing)>" = 
+      "iShares Global Corp Bond UCITS ETF <USD (Distributing)>" =
       "https://www.ishares.com/uk/individual/en/products/251813/ishares-global-corporate-bond-ucits-etf/"
     )
   equity_indices_urls: !expr |-
@@ -21,9 +21,9 @@ default:
 2021Q4:
   pacta_financial_timestamp: "2021Q4"
   ishares_date: "20211231"
-  bonds_indices_urls: !expr |- 
+  bonds_indices_urls: !expr |-
     c(
-      "iShares Global Corp Bond UCITS ETF <USD (Distributing)>" = 
+      "iShares Global Corp Bond UCITS ETF <USD (Distributing)>" =
       "https://www.ishares.com/uk/individual/en/products/251813/ishares-global-corporate-bond-ucits-etf/"
     )
   equity_indices_urls: !expr |-
@@ -41,9 +41,9 @@ default:
 2022Q4:
   pacta_financial_timestamp: "2022Q4"
   ishares_date: "20221230"
-  bonds_indices_urls: !expr |- 
+  bonds_indices_urls: !expr |-
     c(
-      "iShares Global Corp Bond UCITS ETF <USD (Distributing)>" = 
+      "iShares Global Corp Bond UCITS ETF <USD (Distributing)>" =
       "https://www.ishares.com/uk/individual/en/products/251813/ishares-global-corporate-bond-ucits-etf/"
     )
   equity_indices_urls: !expr |-
@@ -61,9 +61,9 @@ default:
 2023Q4:
   pacta_financial_timestamp: "2023Q4"
   ishares_date: "20231229"
-  bonds_indices_urls: !expr |- 
+  bonds_indices_urls: !expr |-
     c(
-      "iShares Global Corp Bond UCITS ETF <USD (Distributing)>" = 
+      "iShares Global Corp Bond UCITS ETF <USD (Distributing)>" =
       "https://www.ishares.com/uk/individual/en/products/251813/ishares-global-corporate-bond-ucits-etf/"
     )
   equity_indices_urls: !expr |-
