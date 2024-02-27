@@ -37,7 +37,8 @@ logger::log_debug("working_dir: {working_dir}.")
 
 input_dir <- file.path("/pacta-data/", pacta_financial_timestamp)
 logger::log_debug("input_dir: {input_dir}.")
-output_dir <- input_dir
+
+output_dir <- file.path("/mnt/outputs")
 logger::log_debug("output_dir: {output_dir}.")
 
 # functions --------------------------------------------------------------------
@@ -202,7 +203,7 @@ for (portfolio_name in portfolio_names) {
     logger::log_warn("Audit file not found for portfolio {portfolio_name}: {audit_file}.")
     warning("Audit file not found.")
   }
-  
+
   if (file.exists(emissions)) {
     logger::log_debug("Reading emissions file: {emissions}.")
     emissions_ind <- readRDS(emissions)
