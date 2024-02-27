@@ -26,10 +26,13 @@ First, create a `.env` file in the root directory with the following fields:
 
 ``` env
 PACTA_DATA_PATH=PATH/TO/pacta-data
+OUTPUT_PATH=PATH/TO/OUTPUT/DIR
 R_CONFIG_ACTIVE=YYYYQQ
 ```
 The `R_CONFIG_ACTIVE` variable should point to the appropriate set of 
 configuration values specified in the `config.yml` file. 
+
+The `OUTPUT_PATH` variable should point to an appropriate directory with read-write access on the host system for saving the output files.
 
 Once these variables have been set, simply run 
 
@@ -37,5 +40,4 @@ Once these variables have been set, simply run
 docker-compose up --build
 ```
 
-and the prepared indices will automatically populate in the folder 
-`PACTA_DATA_PATH`.
+and the prepared indices will automatically populate a timestamped sub-directory in `OUTPUT_PATH`.

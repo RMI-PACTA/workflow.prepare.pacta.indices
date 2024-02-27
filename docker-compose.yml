@@ -7,3 +7,4 @@ services:
       - .env
     volumes:
       - ${PACTA_DATA_PATH}:/pacta-data
+      - ${OUTPUT_PATH}:/outputs
