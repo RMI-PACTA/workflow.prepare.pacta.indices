@@ -37,7 +37,8 @@ logger::log_debug("working_dir: {working_dir}.")
 
 input_dir <- file.path("/pacta-data/", pacta_financial_timestamp)
 logger::log_debug("input_dir: {input_dir}.")
-output_dir <- input_dir
+
+output_dir <- file.path("/mnt/outputs")
 logger::log_debug("output_dir: {output_dir}.")
 
 # functions --------------------------------------------------------------------

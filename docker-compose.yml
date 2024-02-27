@@ -7,4 +7,10 @@ services:
       - LOG_LEVEL=${LOG_LEVEL}
       - R_CONFIG_ACTIVE=${R_CONFIG_ACTIVE}
     volumes:
-      - ${PACTA_DATA_PATH}:/pacta-data/${R_CONFIG_ACTIVE}
+      - type: bind
+        source: ${PACTA_DATA_PATH}
+        target: /pacta-data/${R_CONFIG_ACTIVE}
+      - type: bind
+        source: ${INDICES_PREPARATION_OUTPUTS_PATH:-./outputs}
+        # target must be kept in sync with config.yml
+        target: /mnt/outputs

@@ -48,3 +48,6 @@ rsconnect/
 
 # macOS
 .DS_Store
+
+# default output_dir
+outputs/
