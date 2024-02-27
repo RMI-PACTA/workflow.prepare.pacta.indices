@@ -34,8 +34,11 @@ az acr login --name transitionmonitordockerregistry
     ```
     
     Where `R_CONFIG_ACTIVE` is a top-level key from `config.yml`.
+    The `PACTA_DATA_PATH` variable should point to an appropriate directory with read access on the host system that contains a version of the PACTA analysis inputs for the desired quarter.
 
 1. Run `docker-compose`
+
+    Once these variables have been set, simply run
 
     ``` bash
     docker-compose up --build

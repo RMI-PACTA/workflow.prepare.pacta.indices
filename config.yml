@@ -60,7 +60,7 @@ default:
 
 2023Q4:
   pacta_financial_timestamp: "2023Q4"
-  ishares_date: "20231231"
+  ishares_date: "20231229"
   bonds_indices_urls: !expr |- 
     c(
       "iShares Global Corp Bond UCITS ETF <USD (Distributing)>" = 
