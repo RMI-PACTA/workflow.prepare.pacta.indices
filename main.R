@@ -140,6 +140,12 @@ for (portfolio_name in portfolio_names) {
     stop("Please ensure that each index dataset contains a single unique value for `investor_name`")
   }
 
+  if (is.null(config[["project_code"]])) {
+    project_code <- investor_name
+  } else {
+    project_code <- config[["project_code"]]
+  }
+
   logger::log_debug("Defining portfolio parameters.")
   config_list <-
     list(
@@ -148,7 +154,7 @@ for (portfolio_name in portfolio_names) {
           investor_name = investor_name,
           portfolio_name = portfolio_name,
           language = "EN",
-          project_code = investor_name,
+          project_code = project_code,
           holdings_date = pacta_financial_timestamp
         )
       )
