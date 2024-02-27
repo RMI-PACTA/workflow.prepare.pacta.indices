@@ -1,5 +1,11 @@
+logger::log_threshold(Sys.getenv("LOG_LEVEL", ifelse(interactive(), "FATAL", "INFO")))
+logger::log_formatter(logger::formatter_glue)
+
+logger::log_info("prepare_pacta_indices.R.")
+
 # necessary packages -----------------------------------------------------------
 # please add all dependencies to imports.R
+logger::log_info("Loading necessary packages.")
 suppressPackageStartupMessages({
   library("dplyr")
   library("purrr")
@@ -7,6 +13,7 @@ suppressPackageStartupMessages({
 })
 
 # config
+logger::log_info("Loading config.")
 readRenviron(".env")
 
 config <-
@@ -17,15 +24,22 @@ config <-
   )
 
 pacta_financial_timestamp <- config$pacta_financial_timestamp
+logger::log_debug("pacta_financial_timestamp: {pacta_financial_timestamp}.")
 ishares_date <- config$ishares_date
+logger::log_debug("ishares_date: {ishares_date}.")
 
 # paths ------------------------------------------------------------------------
+logger::log_info("Setting paths.")
+
 transition_monitor_dir <- "/bound"
+logger::log_info("changing directory to transition_monitor_dir: {transition_monitor_dir}.")
 setwd(transition_monitor_dir)
 
 working_dir <- file.path(transition_monitor_dir, "working_dir")
+logger::log_debug("working_dir: {working_dir}.")
 
 input_dir <- file.path("/pacta-data/", pacta_financial_timestamp)
+logger::log_debug("input_dir: {input_dir}.")
 
 output_dir <- file.path("/outputs")
 stopifnot(dir.exists(output_dir))
@@ -42,8 +56,10 @@ if (dir.exists(output_dir)) {
 } else {
   dir.create(output_dir, recursive = TRUE)
 }
+logger::log_debug("output_dir: {output_dir}.")
 
 # functions --------------------------------------------------------------------
+logger::log_info("Defining functions")
 add_inv_and_port_names_if_needed <- function(data,
                                              investor_name,
                                              portfolio_name) {
@@ -72,11 +88,15 @@ pacta_directories <- c(
 )
 
 # load indices data -------------------------------------------------------
+logger::log_info("Scraping indices data")
 
 bonds_indices_urls <- config$bonds_indices_urls
+logger::log_debug("bonds_indices_urls: {bonds_indices_urls}.")
 
 equity_indices_urls <- config$equity_indices_urls
+logger::log_debug("equity_indices_urls: {equity_indices_urls}.")
 
+logger::log_debug("Scraping iShares indices bonds data.")
 ishares_indices_bonds <-
   dplyr::bind_rows(
     lapply(
@@ -91,6 +111,7 @@ ishares_indices_bonds <-
   ) %>%
   pacta.data.scraping::process_ishares_index_data()
 
+logger::log_debug("Scraping iShares indices equity data.")
 ishares_indices_equity <-
   dplyr::bind_rows(
     lapply(
@@ -105,19 +126,26 @@ ishares_indices_equity <-
   ) %>%
   pacta.data.scraping::process_ishares_index_data()
 
+logger::log_debug("Combining iShares indices data.")
 ishares_indices <- bind_rows(ishares_indices_bonds, ishares_indices_equity)
 
 
 # -------------------------------------------------------------------------
 
 temporary_directory <- tempdir()
+logger::log_debug("temporary_directory for outputs: {temporary_directory}.")
 
 portfolio_names <- unique(ishares_indices$portfolio_name)
+logger::log_info("portfolio_names: {portfolio_names}.")
 
 for (portfolio_name in portfolio_names) {
+  logger::log_info("Processing portfolio: {portfolio_name}.")
+
+  logger::log_debug("Creating directories for portfolio.")
   fs::dir_delete(working_dir)
   fs::dir_create(file.path(working_dir, pacta_directories))
 
+  logger::log_trace("Filtering index data to portfolio: {portfolio_name}.")
   portfolio <-
     ishares_indices %>%
     filter(portfolio_name == .env$portfolio_name)
@@ -125,9 +153,11 @@ for (portfolio_name in portfolio_names) {
   investor_name <- unique(portfolio$investor_name)
 
   if (length(investor_name) != 1L) {
+    logger::log_error("Multiple investor names found in data: {investor_name}.")
     stop("Please ensure that each index dataset contains a single unique value for `investor_name`")
   }
 
+  logger::log_debug("Defining portfolio parameters.")
   config_list <-
     list(
       default = list(
@@ -141,23 +171,32 @@ for (portfolio_name in portfolio_names) {
       )
     )
 
+  prameters_file <- file.path(
+    working_dir,
+    "10_Parameter_File",
+    paste0(portfolio_name, "_PortfolioParameters.yml")
+  )
+  logger::log_debug("Writing portfolio parameters to file: \"{parameters_file}\".")
   yaml::write_yaml(
     config_list,
-    file = file.path(
-      working_dir,
-      "10_Parameter_File",
-      paste0(portfolio_name, "_PortfolioParameters.yml")
-    )
+    file = parameters_file
   )
 
+  portfolio_file <- file.path(
+    working_dir,
+    "20_Raw_Inputs",
+    paste0(portfolio_name, ".csv")
+  )
+  logger::log_debug("Writing portfolio data to file: \"{portfolio_file}\".")
   write_csv(
     portfolio,
-    file.path(working_dir, "20_Raw_Inputs", paste0(portfolio_name, ".csv"))
+    portfolio_file
   )
 
-  cli::cli_alert_info("running PACTA on: {.emph {portfolio_name}}")
-system(paste0("Rscript --vanilla /bound/web_tool_script_1.R ", "'", portfolio_name, "'"))
-system(paste0("Rscript --vanilla /bound/web_tool_script_2.R ", "'", portfolio_name, "'"))
+  logger:log_info("running PACTA on: {portfolio_name}.")
+  system(paste0("Rscript --vanilla /bound/web_tool_script_1.R ", "'", portfolio_name, "'"))
+  system(paste0("Rscript --vanilla /bound/web_tool_script_2.R ", "'", portfolio_name, "'"))
+  logger:log_info("finished running PACTA on: {portfolio_name}.")
 
 
   audit_file <- file.path(working_dir, "30_Processed_Inputs", portfolio_name, "audit_file.rds")
@@ -172,25 +211,49 @@ system(paste0("Rscript --vanilla /bound/web_tool_script_2.R ", "'", portfolio_na
   bond_out <- file.path(temporary_directory, paste0(portfolio_name, "_", basename(bond_result)))
 
   if (file.exists(audit_file)) {
+    logger::log_debug("Reading audit file: {audit_file}.")
     audit_ind <- readRDS(audit_file)
     audit_ind <- add_inv_and_port_names_if_needed(audit_ind, investor_name, portfolio_name)
+    logger::log_debug("Rewriting audit file results to temporary_directory: {audit_out}.")
     saveRDS(audit_ind, audit_out)
+  } else {
+    logger::log_warn("Audit file not found for portfolio {portfolio_name}: {audit_file}.")
+    warning("Audit file not found.")
   }
+  
   if (file.exists(emissions)) {
+    logger::log_debug("Reading emissions file: {emissions}.")
     emissions_ind <- readRDS(emissions)
     emissions_ind <- add_inv_and_port_names_if_needed(emissions_ind, investor_name, portfolio_name)
+    logger::log_debug("Rewriting emissions file results to temporary_directory: {emissions_out}.")
     saveRDS(emissions_ind, emissions_out)
+  } else {
+    logger::log_warn("Emissions file not found for portfolio {portfolio_name}: {emissions}.")
+    warning("Emissions file not found.")
   }
+
   if (file.exists(eq_result)) {
+    logger::log_debug("Reading equity results file: {eq_result}.")
     eq_result_ind <- readRDS(eq_result)
     eq_result_ind <- add_inv_and_port_names_if_needed(eq_result_ind, investor_name, portfolio_name)
+    logger::log_debug("Rewriting equity results file to temporary_directory: {eq_out}.")
     saveRDS(eq_result_ind, eq_out)
+  } else {
+    logger::log_warn("Equity results file not found for portfolio {portfolio_name}: {eq_result}.")
+    warning("Equity results file not found.")
   }
+
   if (file.exists(bond_result)) {
+    logger::log_debug("Reading bond results file: {bond_result}.")
     bond_result_ind <- readRDS(bond_result)
     bond_result_ind <- add_inv_and_port_names_if_needed(bond_result_ind, investor_name, portfolio_name)
+    logger::log_debug("Rewriting bond results file to temporary_directory: {bond_out}.")
     saveRDS(bond_result_ind, bond_out)
+  } else {
+    logger::log_warn("Bond results file not found for portfolio {portfolio_name}: {bond_result}.")
+    warning("Bond results file not found.")
   }
+
 }
 
 
@@ -202,12 +265,15 @@ output_files <- list.files(
   full.names = TRUE
 )
 
+logger::log_info("Combining results files.")
 combined <-
   output_files %>%
   map_dfr(readRDS)
 
+logger::log_debug("Unlinking temporary results files.")
 unlink(output_files)
 
+logger::log_debug("Cleaning portfolio names in combined results.")
 combined <-
   combined %>%
   mutate(portfolio_name = case_when(
@@ -219,13 +285,18 @@ combined <-
     TRUE ~ portfolio_name
   ))
 
+
+equity_results_path <- file.path(output_dir, "Indices_equity_results_portfolio.rds")
+logger::log_info("Saving combined equity results to: {equity_results_path}.")
 combined %>%
   filter(!grepl("Global Corp Bond", portfolio_name)) %>%
-  saveRDS(file.path(output_dir, "Indices_equity_results_portfolio.rds"))
+  saveRDS(equity_results_path)
 
+bonds_results_path <- file.path(output_dir, "Indices_bonds_results_portfolio.rds")
+logger::log_info("Saving combined bond results to: {bonds_results_path}.")
 combined %>%
   filter(grepl("Global Corp Bond", portfolio_name)) %>%
-  saveRDS(file.path(output_dir, "Indices_bonds_results_portfolio.rds"))
+  saveRDS(bonds_results_path)
 
 # -------------------------------------------------------------------------
 # output emissions data
@@ -236,11 +307,14 @@ output_files_emissions <- list.files(
   full.names = TRUE
 )
 
+logger::log_info("Combining emissions files.")
 combined_emissions <- output_files_emissions %>%
   map_dfr(readRDS)
 
+logger::log_debug("Unlinking temporary emissions files.")
 unlink(output_files_emissions)
 
+logger::log_debug("Cleaning portfolio names in combined emissions.")
 combined_emissions <-
   combined_emissions %>%
   mutate(portfolio_name = case_when(
@@ -252,13 +326,17 @@ combined_emissions <-
     TRUE ~ portfolio_name
   ))
 
+equity_emissions_path <- file.path(output_dir, "Indices_equity_emissions.rds")
+logger::log_info("Saving combined equity emissions to: {equity_emissions_path}.")
 combined_emissions %>%
   filter(!grepl("Global Corp Bond", portfolio_name)) %>%
-  saveRDS(file.path(output_dir, "Indices_equity_emissions.rds"))
+  saveRDS(equity_emissions_path)
 
+bonds_emissions_path <- file.path(output_dir, "Indices_bonds_emissions.rds")
+logger::log_info("Saving combined bond emissions to: {bonds_emissions_path}.")
 combined_emissions %>%
   filter(grepl("Global Corp Bond", portfolio_name)) %>%
-  saveRDS(file.path(output_dir, "Indices_bonds_emissions.rds"))
+  saveRDS(bonds_emissions_path)
 
 # -------------------------------------------------------------------------
 # output audit file
@@ -269,11 +347,14 @@ output_files_audit <- list.files(
   full.names = TRUE
 )
 
+logger::log_info("Combining audit files.")
 combined_audit <- output_files_audit %>%
   map_dfr(readRDS)
 
+logger::log_debug("Unlinking temporary audit files.")
 unlink(output_files_audit)
 
+logger::log_debug("Cleaning portfolio names in combined audit.")
 combined_audit <-
   combined_audit %>%
   mutate(portfolio_name = case_when(
@@ -285,10 +366,16 @@ combined_audit <-
     TRUE ~ portfolio_name
   ))
 
+equity_audit_path <- file.path(output_dir, "Indices_equity_audit.rds")
+logger::log_info("Saving combined equity audit to: {equity_audit_path}.")
 combined_audit %>%
   filter(!grepl("Global Corp Bond", portfolio_name)) %>%
-  saveRDS(file.path(output_dir, "Indices_equity_audit.rds"))
+  saveRDS(equity_audit_path)
 
+bonds_audit_path <- file.path(output_dir, "Indices_bonds_audit.rds")
+logger::log_info("Saving combined bond audit to: {bonds_audit_path}.")
 combined_audit %>%
   filter(grepl("Global Corp Bond", portfolio_name)) %>%
-  saveRDS(file.path(output_dir, "Indices_bonds_audit.rds"))
+  saveRDS(bonds_audit_path)
+
+logger::log_info("Finished prepare_pacta_indices.R.")
