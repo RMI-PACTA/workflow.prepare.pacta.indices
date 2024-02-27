@@ -25,11 +25,13 @@ The simplest way to run the data preparation process is by using docker.
 First, create a `.env` file in the root directory with the following fields: 
 
 ``` env
-PACTA_DATA_PATH=PATH/TO/pacta-data
+PACTA_DATA_PATH=PATH/TO/PACTA/DATA/DIR
 R_CONFIG_ACTIVE=YYYYQQ
 ```
 The `R_CONFIG_ACTIVE` variable should point to the appropriate set of 
 configuration values specified in the `config.yml` file. 
+
+The `PACTA_DATA_PATH` variable should point to an appropriate directory with read access on the host system that contains a version of the PACTA analysis inputs for the desired quarter.
 
 Once these variables have been set, simply run 
 
