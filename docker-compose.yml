@@ -4,6 +4,7 @@ services:
     build:
       context: .
     environment:
+      - LOG_LEVEL=${LOG_LEVEL}
       - R_CONFIG_ACTIVE=${R_CONFIG_ACTIVE}
     volumes:
       - ${PACTA_DATA_PATH}:/pacta-data/${R_CONFIG_ACTIVE}
