@@ -27,22 +27,6 @@ working_dir <- file.path(transition_monitor_dir, "working_dir")
 
 input_dir <- file.path("/pacta-data/", pacta_financial_timestamp)
 
-output_dir <- file.path("/outputs")
-stopifnot(dir.exists(output_dir))
-
-system_timestamp <- format(
-  Sys.time(),
-  format = "%Y%m%dT%H%M%SZ",
-  tz = "UTC"
-)
-output_dir <- file.path(output_dir, paste(Sys.getenv("R_CONFIG_ACTIVE"), system_timestamp, sep = "_"))
-
-if (dir.exists(output_dir)) {
-  warning("Output directory exists. Files may be overwritten.")
-} else {
-  dir.create(output_dir, recursive = TRUE)
-}
-
 # functions --------------------------------------------------------------------
 add_inv_and_port_names_if_needed <- function(data,
                                              investor_name,
