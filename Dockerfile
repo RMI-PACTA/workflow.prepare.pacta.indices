@@ -15,4 +15,4 @@ COPY main.R config.yml /workflow.prepare.pacta.indices/
 
 WORKDIR /workflow.prepare.pacta.indices
 
-CMD ["Rscript", "--vanilla", "/app/workflow.prepare.pacta.indices.R"]
+CMD ["Rscript", "--vanilla", "/workflow.prepare.pacta.indices/main.R"]
