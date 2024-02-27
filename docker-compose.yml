@@ -6,5 +6,5 @@ services:
     env_file:
       - .env
     volumes:
-      - ${PACTA_DATA_PATH}:/pacta-data
+      - ${PACTA_DATA_PATH}:/pacta-data/${R_CONFIG_ACTIVE}
       - ${OUTPUT_PATH}:/outputs
