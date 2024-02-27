@@ -10,7 +10,9 @@ services:
       - type: bind
         source: ${PACTA_DATA_PATH}
         target: /pacta-data/${R_CONFIG_ACTIVE}
+        read_only: true
       - type: bind
         source: ${INDICES_PREPARATION_OUTPUTS_PATH:-./outputs}
         # target must be kept in sync with config.yml
         target: /mnt/outputs
+        read_only: false
