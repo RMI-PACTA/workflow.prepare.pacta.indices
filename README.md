@@ -1,20 +1,17 @@
 # workflow.prepare.pacta.indices
 
 <!-- badges: start -->
-
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental) 
 <!-- badges: end -->
 
-The goal of `workflow.prepare.pacta.indices` is to run indices through PACTA, 
-and format them for the Transition Monitor webtool. 
+Welcome to `workflow.prepare.pacta.indices`! This tool is designed to streamline the preparation of indices for use in either [workflow.transition.monitor](https://github.com/RMI-PACTA/workflow.transition.monitor).
 
-## Running Prepare PACTA Indices workflow  
+## Running prepare PACTA indices workflow  
 
 ### Required input
 
-The index preparation Dockerfile uses the `ghcr.io/rmi-pacta/workflow.transition.monitor` docker image as a base image.
-Although the image is public, pulling public images from GHCR requires authentication.
+The index preparation `Dockerfile` uses the `ghcr.io/rmi-pacta/workflow.transition.monitor` docker image as a base image. Although the image is public, pulling public images from GHCR requires authentication.
 
 You can authenticate to GHCR with any valid GitHub Personal Access token
 
