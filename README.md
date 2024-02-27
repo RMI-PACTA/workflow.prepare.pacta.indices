@@ -26,15 +26,12 @@ First, create a `.env` file in the root directory with the following fields:
 
 ``` env
 PACTA_DATA_PATH=PATH/TO/PACTA/DATA/DIR
-OUTPUT_PATH=PATH/TO/OUTPUT/DIR
 R_CONFIG_ACTIVE=YYYYQQ
 ```
 The `R_CONFIG_ACTIVE` variable should point to the appropriate set of 
 configuration values specified in the `config.yml` file. 
 
 The `PACTA_DATA_PATH` variable should point to an appropriate directory with read access on the host system that contains a version of the PACTA analysis inputs for the desired quarter.
-
-The `OUTPUT_PATH` variable should point to an appropriate directory with read-write access on the host system for saving the output files.
 
 Once these variables have been set, simply run 
 
