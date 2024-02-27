@@ -37,7 +37,7 @@ echo $GITHUB_PAT | docker login ghcr.io -u <USERNAME> --password-stdin
     
     Where `R_CONFIG_ACTIVE` is a top-level key from `config.yml`.
     The `PACTA_DATA_PATH` variable should point to an appropriate directory with read access on the host system that contains a version of the PACTA analysis inputs for the desired quarter.
-    The `INDICES_PREPARATION_OUTPUTS_PATH` variable should point to an appropriate directory with write access on the host system where the outputs of the index preparation will be written.
+    The `INDICES_PREPARATION_OUTPUTS_PATH` variable should point to an appropriate directory with write access on the host system where the outputs of the index preparation will be written. Defaults to `./outputs`.
     `LOG_LEVEL` sets the verbosity of logging messages (using standard `log4j` log levels)
 
 1. Run `docker-compose`
