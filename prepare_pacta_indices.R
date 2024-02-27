@@ -26,6 +26,7 @@ setwd(transition_monitor_dir)
 working_dir <- file.path(transition_monitor_dir, "working_dir")
 
 input_dir <- file.path("/pacta-data/", pacta_financial_timestamp)
+output_dir <- input_dir
 
 # functions --------------------------------------------------------------------
 add_inv_and_port_names_if_needed <- function(data,
