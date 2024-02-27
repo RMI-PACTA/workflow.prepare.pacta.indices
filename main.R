@@ -177,8 +177,23 @@ for (portfolio_name in portfolio_names) {
   )
 
   logger::log_info("running PACTA on: {portfolio_name}.")
-  system(paste0("Rscript --vanilla /bound/web_tool_script_1.R ", "'", portfolio_name, "'"))
-  system(paste0("Rscript --vanilla /bound/web_tool_script_2.R ", "'", portfolio_name, "'"))
+  logger::log_debug("Running PACTA web_tool_script_1.R.")
+  audit_exit <- system(paste0("Rscript --vanilla /bound/web_tool_script_1.R ", "'", portfolio_name, "'"))
+  if (audit_exit == 0) {
+    logger::log_debug("PACTA web_tool_script_1.R succeeded for portfolio: {portfolio_name}.")
+  } else {
+    logger::log_error("PACTA web_tool_script_1.R failed for portfolio: {portfolio_name}.")
+    stop("PACTA web_tool_script_1.R failed.")
+  }
+
+  logger::log_debug("Running PACTA web_tool_script_2.R.")
+  pacta_exit <- system(paste0("Rscript --vanilla /bound/web_tool_script_2.R ", "'", portfolio_name, "'"))
+  if (pacta_exit == 0) {
+    logger::log_debug("PACTA web_tool_script_2.R succeeded for portfolio: {portfolio_name}.")
+  } else {
+    logger::log_error("PACTA web_tool_script_2.R failed for portfolio: {portfolio_name}.")
+    stop("PACTA web_tool_script_2.R failed.")
+  }
   logger::log_info("finished running PACTA on: {portfolio_name}.")
 
 
