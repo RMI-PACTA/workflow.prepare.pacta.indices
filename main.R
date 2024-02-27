@@ -1,7 +1,7 @@
 logger::log_threshold(Sys.getenv("LOG_LEVEL", ifelse(interactive(), "FATAL", "INFO")))
 logger::log_formatter(logger::formatter_glue)
 
-logger::log_info("prepare_pacta_indices.R.")
+logger::log_info("main.R.")
 
 # necessary packages -----------------------------------------------------------
 # please add all dependencies to imports.R
@@ -202,7 +202,7 @@ for (portfolio_name in portfolio_names) {
     logger::log_warn("Audit file not found for portfolio {portfolio_name}: {audit_file}.")
     warning("Audit file not found.")
   }
-  
+
   if (file.exists(emissions)) {
     logger::log_debug("Reading emissions file: {emissions}.")
     emissions_ind <- readRDS(emissions)
@@ -360,4 +360,4 @@ combined_audit %>%
   filter(grepl("Global Corp Bond", portfolio_name)) %>%
   saveRDS(bonds_audit_path)
 
-logger::log_info("Finished prepare_pacta_indices.R.")
+logger::log_info("Finished main.R.")
