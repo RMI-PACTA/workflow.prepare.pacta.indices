@@ -3,8 +3,8 @@ services:
   indices_prep:
     build:
       context: .
-    env_file:
-      - .env
+    environment:
+      - R_CONFIG_ACTIVE=${R_CONFIG_ACTIVE}
     volumes:
       - ${PACTA_DATA_PATH}:/pacta-data/${R_CONFIG_ACTIVE}
       - ${OUTPUT_PATH}:/outputs

@@ -12,10 +12,7 @@ suppressPackageStartupMessages({
   library("readr")
 })
 
-# config
 logger::log_info("Loading config.")
-readRenviron(".env")
-
 config <-
   config::get(
     file = "config.yml",
@@ -171,7 +168,7 @@ for (portfolio_name in portfolio_names) {
       )
     )
 
-  prameters_file <- file.path(
+  parameters_file <- file.path(
     working_dir,
     "10_Parameter_File",
     paste0(portfolio_name, "_PortfolioParameters.yml")
@@ -193,10 +190,10 @@ for (portfolio_name in portfolio_names) {
     portfolio_file
   )
 
-  logger:log_info("running PACTA on: {portfolio_name}.")
+  logger::log_info("running PACTA on: {portfolio_name}.")
   system(paste0("Rscript --vanilla /bound/web_tool_script_1.R ", "'", portfolio_name, "'"))
   system(paste0("Rscript --vanilla /bound/web_tool_script_2.R ", "'", portfolio_name, "'"))
-  logger:log_info("finished running PACTA on: {portfolio_name}.")
+  logger::log_info("finished running PACTA on: {portfolio_name}.")
 
 
   audit_file <- file.path(working_dir, "30_Processed_Inputs", portfolio_name, "audit_file.rds")
