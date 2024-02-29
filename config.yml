@@ -58,7 +58,7 @@ default:
       "https://www.ishares.com/uk/individual/en/products/251850/ishares-msci-acwi-ucits-etf/"
     )
 
-PA2024CH:
+2023Q4:
   project_code: "PA2024CH"
   pacta_financial_timestamp: "2023Q4"
   ishares_date: "20231229"
