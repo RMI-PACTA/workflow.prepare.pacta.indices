@@ -1,4 +1,5 @@
-FROM ghcr.io/rmi-pacta/workflow.transition.monitor:main
+ARG BASE_TAG="main"
+FROM ghcr.io/rmi-pacta/workflow.transition.monitor:${BASE_TAG}
 # inherit CRAN REPO and R options from base image
 
 # Install R dependencies

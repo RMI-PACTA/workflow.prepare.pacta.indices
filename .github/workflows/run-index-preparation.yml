@@ -1,0 +1,91 @@
+---
+name: Run scenario preparation
+
+# This workflow is based on, but diverges from the example here:
+# https://docs.docker.com/build/ci/github-actions/multi-platform/#distribute-build-across-multiple-runners
+
+on:
+  workflow_call:
+    inputs:
+      image-tag:
+        description: Tag for docker image
+        required: true
+        type: string
+      data-share-path:
+        description: Tag for docker image
+        required: true
+        type: string
+
+jobs:
+  prep:
+    name: Run workflow
+    runs-on: ubuntu-latest
+    strategy:
+      # fail if any build fails
+      fail-fast: false
+      # build amd64 and arm64 in parallel
+      matrix:
+        config_active:
+          - "2022Q4"
+          - "2023Q4"
+    timeout-minutes: 45
+    # write to packages (ghcr.io)
+    permissions:
+      packages: read
+      contents: read
+      id-token: write
+
+    steps:
+
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      # https://github.com/Azure/login?tab=readme-ov-file#login-with-openid-connect-oidc-recommended
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # https://github.com/marketplace/actions/azure-cli-action#workflow-to-execute-an-azure-cli-script-of-a-specific-cli-version
+      - name: Download pacta-data
+        uses: azure/CLI@v2
+        with:
+          # azcliversion: 2.30.0
+          inlineScript: |
+            data_share_path="2023Q4_20240424T120055Z"
+            pacta_data_afs_path="https://pactadatadev.file.core.windows.net/workflow-data-preparation-outputs/$data_share_path/*"
+            pacta_data_quarter="2023Q4"
+            az storage copy --source "$pacta_data_afs_path" --recursive --destination "pacta-data/$pacta_data_quarter"
+
+      - name: Prepare .env file
+        with:
+          pacta_data_quarter: ${{ matrix.config_active }}
+        run: |
+          echo "PACTA_DATA_PATH=./pacta-data/$pacta_data_quarter" > .env
+          echo "INDICES_PREPARATION_OUTPUTS_PATH=./outputs" >> .env
+          echo "R_CONFIG_ACTIVE=$pacta_data_quarter" >> .env
+          echo "LOG_LEVEL=DEBUG" >> .env
+          mkdir "outputs"
+
+      - name: run container
+        with:
+          base_tag: ${{ inputs.image-tag }}
+        run: |
+          docker build --build-arg="BASE_TAG=$base_tag" -t pacta-index-prep:$base_tag .
+
+      - name: run container
+        run: |
+          docker-compose up --build
+
+      # https://github.com/marketplace/actions/azure-cli-action#workflow-to-execute-an-azure-cli-script-of-a-specific-cli-version
+      - name: UPload Results
+        uses: azure/CLI@v2
+        with:
+          # azcliversion: 2.30.0
+          inlineScript: |
+            outputs_dir="outputs"
+            workflow_index_outputs_afs_path="https://pactadatadev.file.core.windows.net/workflow-prepare-pacta-indices-outputs"
+            az storage copy --source $outputs_dir/* --recursive --destination "$workflow_index_outputs_afs_path"
+
