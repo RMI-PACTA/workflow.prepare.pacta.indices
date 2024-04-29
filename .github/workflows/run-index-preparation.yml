@@ -12,7 +12,11 @@ on:
         required: true
         type: string
       data-share-path:
-        description: Tag for docker image
+        description: Path on Azure Files to pacta-data
+        required: true
+        type: string
+      config_active:
+        description: active config from config.yml
         required: true
         type: string
 
@@ -20,14 +24,6 @@ jobs:
   prep:
     name: Run workflow
     runs-on: ubuntu-latest
-    strategy:
-      # fail if any build fails
-      fail-fast: false
-      # build amd64 and arm64 in parallel
-      matrix:
-        config_active:
-          - "2022Q4"
-          - "2023Q4"
     timeout-minutes: 45
     # write to packages (ghcr.io)
     permissions:
@@ -51,12 +47,13 @@ jobs:
       # https://github.com/marketplace/actions/azure-cli-action#workflow-to-execute-an-azure-cli-script-of-a-specific-cli-version
       - name: Download pacta-data
         uses: azure/CLI@v2
+        env:
+          data_share_path: ${{ inputs.data-share-path }}
+          pacta_data_quarter: ${{ inputs.config_active }}
         with:
           # azcliversion: 2.30.0
           inlineScript: |
-            data_share_path="2023Q4_20240424T120055Z"
             pacta_data_afs_path="https://pactadatadev.file.core.windows.net/workflow-data-preparation-outputs/$data_share_path/*"
-            pacta_data_quarter="2023Q4"
             az storage copy \
               --source "$pacta_data_afs_path" \
               --destination "pacta-data/$pacta_data_quarter"
