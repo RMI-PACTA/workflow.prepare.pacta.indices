@@ -39,8 +39,11 @@ jobs:
 
     steps:
 
-      - name: Checkout repo
+      - name: Checkout workflow.prepare.pacta.indices
         uses: actions/checkout@v4
+        with:
+          repository: RMI-PACTA/workflow.prepare.pacta.indices
+          token: ${{ secrets.REPO_PAT }}
 
       # https://github.com/Azure/login?tab=readme-ov-file#login-with-openid-connect-oidc-recommended
       - name: Azure Login
@@ -68,23 +71,33 @@ jobs:
 
       - name: Prepare .env file
         env:
-          pacta_data_quarter: ${{ matrix.config_active }}
+          pacta_data_quarter: ${{ inputs.config_active }}
         run: |
           echo "PACTA_DATA_PATH=./pacta-data/$pacta_data_quarter" > .env
           echo "INDICES_PREPARATION_OUTPUTS_PATH=./outputs" >> .env
           echo "R_CONFIG_ACTIVE=$pacta_data_quarter" >> .env
           echo "LOG_LEVEL=DEBUG" >> .env
           mkdir "outputs"
+          cat .env
 
       - name: run container
         env:
           base_tag: ${{ inputs.image-tag }}
         run: |
-          docker build --build-arg="BASE_TAG=$base_tag" -t pacta-index-prep:$base_tag .
+          base_tag=$(echo "$base_tag" | tr -d '[:space:]')
+          docker-compose build --build-arg="BASE_TAG=$base_tag" -t pacta-index-prep:$base_tag .
 
       - name: run container
         run: |
-          docker-compose up --build
+          docker-compose up
+
+      # https://github.com/Azure/login?tab=readme-ov-file#login-with-openid-connect-oidc-recommended
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       # https://github.com/marketplace/actions/azure-cli-action#workflow-to-execute-an-azure-cli-script-of-a-specific-cli-version
       - name: Upload Results
@@ -94,8 +107,11 @@ jobs:
           # azcliversion: 2.30.0
           inlineScript: |
             outputs_dir="outputs"
-            workflow_index_outputs_afs_path="https://pactadatadev.file.core.windows.net/workflow-prepare-pacta-indices-outputs"
-            az storage copy --source $outputs_dir/* --recursive --destination "$workflow_index_outputs_afs_path"
             timestamp_dir="$(ls $outputs_dir)"
             echo "timestamp-dir=$timestamp_dir"
             echo "timestamp-dir=$timestamp_dir" >> "$GITHUB_OUTPUT"
+            workflow_index_outputs_afs_path="https://pactadatadev.file.core.windows.net/workflow-prepare-pacta-indices-outputs"
+            az storage copy \
+              --source $outputs_dir/* \
+              --destination "$workflow_index_outputs_afs_path" \
+              --recursive
