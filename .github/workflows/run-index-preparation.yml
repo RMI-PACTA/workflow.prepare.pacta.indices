@@ -99,8 +99,11 @@ jobs:
           # azcliversion: 2.30.0
           inlineScript: |
             outputs_dir="outputs"
-            workflow_index_outputs_afs_path="https://pactadatadev.file.core.windows.net/workflow-prepare-pacta-indices-outputs"
-            az storage copy --source $outputs_dir/* --recursive --destination "$workflow_index_outputs_afs_path"
             timestamp_dir="$(ls $outputs_dir)"
             echo "timestamp-dir=$timestamp_dir"
             echo "timestamp-dir=$timestamp_dir" >> "$GITHUB_OUTPUT"
+            workflow_index_outputs_afs_path="https://pactadatadev.file.core.windows.net/workflow-prepare-pacta-indices-outputs"
+            az storage copy \
+              --source $outputs_dir/* \
+              --destination "$workflow_index_outputs_afs_path" \
+              --recursive
