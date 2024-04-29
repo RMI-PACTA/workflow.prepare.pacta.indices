@@ -78,6 +78,7 @@ jobs:
           echo "R_CONFIG_ACTIVE=$pacta_data_quarter" >> .env
           echo "LOG_LEVEL=DEBUG" >> .env
           mkdir "outputs"
+          cat .env
 
       - name: run container
         env:
