@@ -60,7 +60,7 @@ jobs:
             az storage copy --source "$pacta_data_afs_path" --recursive --destination "pacta-data/$pacta_data_quarter"
 
       - name: Prepare .env file
-        with:
+        env:
           pacta_data_quarter: ${{ matrix.config_active }}
         run: |
           echo "PACTA_DATA_PATH=./pacta-data/$pacta_data_quarter" > .env
@@ -70,7 +70,7 @@ jobs:
           mkdir "outputs"
 
       - name: run container
-        with:
+        env:
           base_tag: ${{ inputs.image-tag }}
         run: |
           docker build --build-arg="BASE_TAG=$base_tag" -t pacta-index-prep:$base_tag .
