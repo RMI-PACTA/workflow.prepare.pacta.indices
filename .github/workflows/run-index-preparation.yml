@@ -84,11 +84,11 @@ jobs:
           base_tag: ${{ inputs.image-tag }}
         run: |
           base_tag=$(echo "$base_tag" | tr -d '[:space:]')
-          docker build --build-arg="BASE_TAG=$base_tag" -t pacta-index-prep:$base_tag .
+          docker-compose build --build-arg="BASE_TAG=$base_tag" -t pacta-index-prep:$base_tag .
 
       - name: run container
         run: |
-          docker-compose up --build
+          docker-compose up
 
       # https://github.com/marketplace/actions/azure-cli-action#workflow-to-execute-an-azure-cli-script-of-a-specific-cli-version
       - name: Upload Results
