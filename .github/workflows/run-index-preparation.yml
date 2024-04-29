@@ -71,7 +71,7 @@ jobs:
 
       - name: Prepare .env file
         env:
-          pacta_data_quarter: ${{ matrix.config_active }}
+          pacta_data_quarter: ${{ inputs.config_active }}
         run: |
           echo "PACTA_DATA_PATH=./pacta-data/$pacta_data_quarter" > .env
           echo "INDICES_PREPARATION_OUTPUTS_PATH=./outputs" >> .env
