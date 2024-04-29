@@ -80,7 +80,7 @@ jobs:
           docker-compose up --build
 
       # https://github.com/marketplace/actions/azure-cli-action#workflow-to-execute-an-azure-cli-script-of-a-specific-cli-version
-      - name: UPload Results
+      - name: Upload Results
         uses: azure/CLI@v2
         with:
           # azcliversion: 2.30.0
@@ -88,4 +88,3 @@ jobs:
             outputs_dir="outputs"
             workflow_index_outputs_afs_path="https://pactadatadev.file.core.windows.net/workflow-prepare-pacta-indices-outputs"
             az storage copy --source $outputs_dir/* --recursive --destination "$workflow_index_outputs_afs_path"
-
