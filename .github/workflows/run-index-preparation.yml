@@ -83,6 +83,7 @@ jobs:
         env:
           base_tag: ${{ inputs.image-tag }}
         run: |
+          base_tag=$(echo "$base_tag" | tr -d '[:space:]')
           docker build --build-arg="BASE_TAG=$base_tag" -t pacta-index-prep:$base_tag .
 
       - name: run container
