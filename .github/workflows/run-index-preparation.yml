@@ -56,7 +56,7 @@ jobs:
             pacta_data_afs_path="https://pactadatadev.file.core.windows.net/workflow-data-preparation-outputs/$data_share_path/*"
             az storage copy \
               --source "$pacta_data_afs_path" \
-              --destination "pacta-data/$pacta_data_quarter"
+              --destination "pacta-data/$pacta_data_quarter" \
               --recursive \
               --exclude-pattern "*.sqlite"
 
