@@ -15,6 +15,7 @@ on:
 jobs:
   run-index-prep:
     uses: ./.github/workflows/run-index-preparation.yml
+    secrets: inherit
     with:
       image-tag: main
       data-share-path: "2023Q4_20240424T120055Z"
