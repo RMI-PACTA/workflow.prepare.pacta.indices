@@ -57,7 +57,11 @@ jobs:
             data_share_path="2023Q4_20240424T120055Z"
             pacta_data_afs_path="https://pactadatadev.file.core.windows.net/workflow-data-preparation-outputs/$data_share_path/*"
             pacta_data_quarter="2023Q4"
-            az storage copy --source "$pacta_data_afs_path" --recursive --destination "pacta-data/$pacta_data_quarter"
+            az storage copy \
+              --source "$pacta_data_afs_path" \
+              --destination "pacta-data/$pacta_data_quarter"
+              --recursive \
+              --exclude-pattern "*.sqlite"
 
       - name: Prepare .env file
         env:
