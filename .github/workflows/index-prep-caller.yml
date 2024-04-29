@@ -1,0 +1,20 @@
+---
+name: Run scenario preparation
+
+# This workflow is based on, but diverges from the example here:
+# https://docs.docker.com/build/ci/github-actions/multi-platform/#distribute-build-across-multiple-runners
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 0 * * 1,2,3,4,5'
+  workflow_dispatch:
+
+jobs:
+  run-index-prep:
+    uses: ./.github/workflows/build-push-private.yml
+    with:
+      image-tag: main
+      data-share-path: "2023Q4_20240424T120055Z"
