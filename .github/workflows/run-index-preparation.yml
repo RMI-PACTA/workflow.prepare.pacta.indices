@@ -1,5 +1,5 @@
 ---
-name: Run scenario preparation
+name: Run Index preparation
 
 # This workflow is based on, but diverges from the example here:
 # https://docs.docker.com/build/ci/github-actions/multi-platform/#distribute-build-across-multiple-runners
@@ -26,7 +26,7 @@ on:
 
 jobs:
   prep:
-    name: Run workflow
+    name: Run Index Preparation
     runs-on: ubuntu-latest
     timeout-minutes: 45
     # write to packages (ghcr.io)
