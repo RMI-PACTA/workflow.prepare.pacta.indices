@@ -5,6 +5,7 @@ services:
     environment:
       - LOG_LEVEL=${LOG_LEVEL}
       - R_CONFIG_ACTIVE=${R_CONFIG_ACTIVE}
+      - BENCHMARK_DATA_FILEPATH=${BENCHMARK_DATA_FILEPATH}
     volumes:
       - type: bind
         source: ${PACTA_DATA_PATH}
