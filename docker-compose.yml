@@ -3,9 +3,9 @@ services:
     build:
       context: .
     environment:
-      - LOG_LEVEL=${LOG_LEVEL:-TRACE}
-      - R_CONFIG_ACTIVE=${R_CONFIG_ACTIVE:-2023Q4}
-      - BENCHMARK_DATA_FILEPATH=${BENCHMARK_DATA_FILEPATH:-./inputs}
+      LOG_LEVEL: ${LOG_LEVEL:-TRACE}
+      R_CONFIG_ACTIVE: ${R_CONFIG_ACTIVE:-2023Q4}
+      BENCHMARK_DATA_FILEPATH: ${BENCHMARK_DATA_FILEPATH:-./inputs}
     volumes:
       - type: bind
         source: ${PACTA_DATA_PATH}
