@@ -10,3 +10,4 @@ default:
 2023Q4:
   project_code: "PA2024CH"
   pacta_financial_timestamp: "2023Q4"
+  benchmark_inputs_filename: "2023Q4_benchmark_portfolios_20240530-070058.rds"

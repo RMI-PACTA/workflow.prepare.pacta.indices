@@ -23,6 +23,9 @@ config <-
 pacta_financial_timestamp <- config$pacta_financial_timestamp
 logger::log_debug("pacta_financial_timestamp: {pacta_financial_timestamp}.")
 
+benchmark_inputs_filename <- config$benchmark_inputs_filename
+logger::log_debug("benchmark_inputs_filename: {benchmark_inputs_filename}.")
+
 
 # paths ------------------------------------------------------------------------
 logger::log_info("Setting paths.")
@@ -37,7 +40,7 @@ logger::log_debug("working_dir: {working_dir}.")
 input_dir <- file.path("/pacta-data/", pacta_financial_timestamp)
 logger::log_debug("input_dir: {input_dir}.")
 
-benchmark_data_filepath <- Sys.getenv("BENCHMARK_DATA_FILEPATH")
+benchmark_data_filepath <- file.path("/mnt/inputs", benchmark_inputs_filename)
  if (!file.exists(benchmark_data_filepath)) {
    logger::log_error("Benchmark input data not available: {benchmark_data_filepath}.")
    stop()
