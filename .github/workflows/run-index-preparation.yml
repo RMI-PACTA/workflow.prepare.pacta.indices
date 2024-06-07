@@ -76,7 +76,7 @@ jobs:
         with:
           # azcliversion: 2.30.0
           inlineScript: |
-            becnhmark_data_afs_path="https://pactadatadev.file.core.windows.net/workflow-benchmark-preparation-outputs/*"
+            benchmark_data_afs_path="https://pactadatadev.file.core.windows.net/workflow-benchmark-preparation-outputs"
             az storage copy \
               --source "becnhmark_data_afs_path" \
               --destination "inputs" \
