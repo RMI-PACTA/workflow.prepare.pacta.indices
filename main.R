@@ -126,7 +126,7 @@ for (portfolio_name in portfolio_names) {
   }
 
   if (is.null(config[["project_code"]])) {
-    project_code <- investor_name
+    project_code <- "GENERAL"
   } else {
     project_code <- config[["project_code"]]
   }
