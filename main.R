@@ -22,8 +22,10 @@ config <-
 
 pacta_financial_timestamp <- config$pacta_financial_timestamp
 logger::log_debug("pacta_financial_timestamp: {pacta_financial_timestamp}.")
-ishares_date <- config$ishares_date
-logger::log_debug("ishares_date: {ishares_date}.")
+
+benchmark_inputs_filename <- config$benchmark_inputs_filename
+logger::log_debug("benchmark_inputs_filename: {benchmark_inputs_filename}.")
+
 
 # paths ------------------------------------------------------------------------
 logger::log_info("Setting paths.")
@@ -37,6 +39,12 @@ logger::log_debug("working_dir: {working_dir}.")
 
 input_dir <- file.path("/pacta-data/", pacta_financial_timestamp)
 logger::log_debug("input_dir: {input_dir}.")
+
+benchmark_data_filepath <- file.path("/mnt/inputs", benchmark_inputs_filename)
+ if (!file.exists(benchmark_data_filepath)) {
+   logger::log_error("Benchmark input data not available: {benchmark_data_filepath}.")
+   stop()
+ }
 
 output_home <- file.path("/mnt/outputs")
 stopifnot(dir.exists(output_home))
@@ -84,47 +92,10 @@ pacta_directories <- c(
   "50_Outputs"
 )
 
-# load indices data -------------------------------------------------------
-logger::log_info("Scraping indices data")
+# load benchmark data ----------------------------------------------------------
 
-bonds_indices_urls <- config$bonds_indices_urls
-logger::log_debug("bonds_indices_urls: {bonds_indices_urls}.")
-
-equity_indices_urls <- config$equity_indices_urls
-logger::log_debug("equity_indices_urls: {equity_indices_urls}.")
-
-logger::log_debug("Scraping iShares indices bonds data.")
-ishares_indices_bonds <-
-  dplyr::bind_rows(
-    lapply(
-      seq_along(bonds_indices_urls), function(index) {
-        pacta.data.scraping::get_ishares_index_data(
-          bonds_indices_urls[[index]],
-          names(bonds_indices_urls)[[index]],
-          ishares_date
-        )
-      }
-    )
-  ) %>%
-  pacta.data.scraping::process_ishares_index_data()
-
-logger::log_debug("Scraping iShares indices equity data.")
-ishares_indices_equity <-
-  dplyr::bind_rows(
-    lapply(
-      seq_along(equity_indices_urls), function(index) {
-        pacta.data.scraping::get_ishares_index_data(
-          equity_indices_urls[[index]],
-          names(equity_indices_urls)[[index]],
-          ishares_date
-        )
-      }
-    )
-  ) %>%
-  pacta.data.scraping::process_ishares_index_data()
-
-logger::log_debug("Combining iShares indices data.")
-ishares_indices <- bind_rows(ishares_indices_bonds, ishares_indices_equity)
+logger::log_info("Loading benchmark data.")
+benchmark_data <- readRDS(file = benchmark_data_filepath)
 
 
 # -------------------------------------------------------------------------
@@ -132,7 +103,7 @@ ishares_indices <- bind_rows(ishares_indices_bonds, ishares_indices_equity)
 temporary_directory <- tempdir()
 logger::log_debug("temporary_directory for outputs: {temporary_directory}.")
 
-portfolio_names <- unique(ishares_indices$portfolio_name)
+portfolio_names <- unique(benchmark_data$portfolio_name)
 logger::log_info("portfolio_names: {portfolio_names}.")
 
 for (portfolio_name in portfolio_names) {
@@ -144,7 +115,7 @@ for (portfolio_name in portfolio_names) {
 
   logger::log_trace("Filtering index data to portfolio: {portfolio_name}.")
   portfolio <-
-    ishares_indices %>%
+    benchmark_data %>%
     filter(portfolio_name == .env$portfolio_name)
 
   investor_name <- unique(portfolio$investor_name)
@@ -155,7 +126,7 @@ for (portfolio_name in portfolio_names) {
   }
 
   if (is.null(config[["project_code"]])) {
-    project_code <- investor_name
+    project_code <- "GENERAL"
   } else {
     project_code <- config[["project_code"]]
   }

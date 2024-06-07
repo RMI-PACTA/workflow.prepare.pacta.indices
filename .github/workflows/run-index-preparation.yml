@@ -68,12 +68,23 @@ jobs:
               --destination "pacta-data/$pacta_data_quarter" \
               --recursive \
               --exclude-pattern "*.sqlite"
+      - name: Download benchmark inputs
+        uses: azure/CLI@v2
+        with:
+          # azcliversion: 2.30.0
+          inlineScript: |
+            benchmark_data_afs_path="https://pactadatadev.file.core.windows.net/workflow-benchmark-preparation-outputs/*"
+            az storage copy \
+              --source "$benchmark_data_afs_path" \
+              --destination "inputs" \
+              --recursive
 
       - name: Prepare .env file
         env:
           pacta_data_quarter: ${{ inputs.config_active }}
         run: |
           echo "PACTA_DATA_PATH=./pacta-data/$pacta_data_quarter" > .env
+          echo "INDICES_PREPARATION_INPUTS_PATH=./inputs" >> .env
           echo "INDICES_PREPARATION_OUTPUTS_PATH=./outputs" >> .env
           echo "R_CONFIG_ACTIVE=$pacta_data_quarter" >> .env
           echo "LOG_LEVEL=DEBUG" >> .env

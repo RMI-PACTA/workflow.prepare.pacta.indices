@@ -1,5 +1,5 @@
 ---
-name: Run scenario preparation
+name: Run index preparation
 
 # This workflow is based on, but diverges from the example here:
 # https://docs.docker.com/build/ci/github-actions/multi-platform/#distribute-build-across-multiple-runners
