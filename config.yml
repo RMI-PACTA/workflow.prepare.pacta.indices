@@ -6,8 +6,9 @@ default:
 
 2022Q4:
   pacta_financial_timestamp: "2022Q4"
+  benchmark_inputs_filename: "2022Q4_benchmark_portfolios_20240607-002814.rds"
 
 2023Q4:
   project_code: "PA2024CH"
   pacta_financial_timestamp: "2023Q4"
-  benchmark_inputs_filename: "2023Q4_benchmark_portfolios_20240530-070058.rds"
+  benchmark_inputs_filename: "2023Q4_benchmark_portfolios_20240607-002819.rds"
