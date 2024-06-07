@@ -70,13 +70,10 @@ jobs:
               --exclude-pattern "*.sqlite"
       - name: Download benchmark inputs
         uses: azure/CLI@v2
-        env:
-          data_share_path: ${{ inputs.data-share-path }}
-          pacta_data_quarter: ${{ inputs.config_active }}
         with:
           # azcliversion: 2.30.0
           inlineScript: |
-            benchmark_data_afs_path="https://pactadatadev.file.core.windows.net/workflow-benchmark-preparation-outputs"
+            benchmark_data_afs_path="https://pactadatadev.file.core.windows.net/workflow-benchmark-preparation-outputs/*"
             az storage copy \
               --source "$benchmark_data_afs_path" \
               --destination "inputs" \
