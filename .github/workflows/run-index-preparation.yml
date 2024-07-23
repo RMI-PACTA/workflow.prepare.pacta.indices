@@ -109,7 +109,7 @@ jobs:
           find pacta-data/ -type f -exec md5sum {} \; >> "$tmpfile"
           find inputs/ -type f -exec md5sum {} \; >> "$tmpfile"
           cat $tmpfile
-          overall_md5=$(md5sum "$tmpfile")
+          overall_md5=$(md5sum "$tmpfile" | awk '{ print $1 }')
           echo "overall-md5=$overall_md5"
           echo "overall-md5=$overall_md5" >> "$GITHUB_OUTPUT"
 
