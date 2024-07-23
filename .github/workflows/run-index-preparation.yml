@@ -102,19 +102,19 @@ jobs:
           base_tag: ${{ inputs.image-tag }}
         run: |
           tmpfile=$(mktemp)
-          docker run --rm ghcr.io/rmi-pacta/workflow.transition.monitor:${base_tag} find /usr/local/lib/R/ -type f -exec md5sum {} \; > "$tmpfile"
-          docker run --rm ghcr.io/rmi-pacta/workflow.transition.monitor:${base_tag} find /bound -type f -exec md5sum {} \; > "$tmpfile"
-          docker run --rm ghcr.io/rmi-pacta/workflow.transition.monitor:${base_tag} find /pacta-data -type f -exec md5sum {} \; > "$tmpfile"
-          md5sum .env
-          find pacta-data/ -type f -exec md5sum {} \; > "$tmpfile"
-          find inputs/ -type f -exec md5sum {} \; > "$tmpfile"
+          docker run --rm ghcr.io/rmi-pacta/workflow.transition.monitor:${base_tag} find /usr/local/lib/R/ -type f -exec md5sum {} \; >> "$tmpfile"
+          docker run --rm ghcr.io/rmi-pacta/workflow.transition.monitor:${base_tag} find /bound -type f -exec md5sum {} \; >> "$tmpfile"
+          docker run --rm ghcr.io/rmi-pacta/workflow.transition.monitor:${base_tag} find /pacta-data -type f -exec md5sum {} \; >> "$tmpfile"
+          md5sum .env >> $tmpfile
+          find pacta-data/ -type f -exec md5sum {} \; >> "$tmpfile"
+          find inputs/ -type f -exec md5sum {} \; >> "$tmpfile"
           cat $tmpfile
           overall_md5=$(md5sum "$tmpfile")
           echo "overall-md5=$overall_md5"
           echo "overall-md5=$overall_md5" >> "$GITHUB_OUTPUT"
 
 
-      - name: run container
+      - name: build image
         env:
           base_tag: ${{ inputs.image-tag }}
         run: |
