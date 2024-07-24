@@ -118,7 +118,7 @@ jobs:
         id: check-exist
         uses: azure/CLI@v2
         env:
-          overall_md5: ${{ steps,.hash-files.outpus.overall-md5 }}
+          overall_md5: ${{ steps.hash-files.outpus.overall-md5 }}
         with:
           # azcliversion: 2.30.0
           inlineScript: |
@@ -156,7 +156,6 @@ jobs:
 
       # https://github.com/marketplace/actions/azure-cli-action#workflow-to-execute-an-azure-cli-script-of-a-specific-cli-version
       - name: Upload Results
-        if: ${{ steps.check-exist.outputs.files-exist != true }}
         id: upload-results
         uses: azure/CLI@v2
         with:
