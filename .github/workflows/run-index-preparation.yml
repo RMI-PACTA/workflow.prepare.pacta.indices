@@ -109,6 +109,9 @@ jobs:
           md5sum .env >> $tmpfile
           find pacta-data/ -type f -exec md5sum {} \; >> "$tmpfile"
           find inputs/ -type f -exec md5sum {} \; >> "$tmpfile"
+          md5sum DESCRIPTION >> "$tmpfile"
+          md5sum config.yml >> "$tmpfile"
+          md5sum main.R >> "$tmpfile"
           cat $tmpfile
           overall_md5=$(md5sum "$tmpfile" | awk '{ print $1 }')
           echo "overall-md5=$overall_md5"
