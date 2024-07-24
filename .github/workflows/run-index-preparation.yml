@@ -19,10 +19,6 @@ on:
         description: active config from config.yml
         required: true
         type: string
-      artifact-key:
-        description: key to disambiguate artifacts
-        required: false
-        type: string
     outputs:
       results-dir:
         description: "Timestamped directory of workflow outputs"
@@ -126,9 +122,10 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: ${{ inputs.config_active }}-${{ inputs.image-tag }}-${{ inputs.artifact-key }}
+          name: ${{ inputs.config_active }}-${{ steps.hash-files.outputs.overall-md5 }}
           path: ${{ steps.hash-files.outputs.hashfile }}
           if-no-files-found: error
+          overwrite: true
 
       - name: Check if results exist
         id: check-exist
