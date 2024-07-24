@@ -118,7 +118,7 @@ jobs:
         id: check-exist
         uses: azure/CLI@v2
         env:
-          overall_md5: ${{ steps.hash-files.outpus.overall-md5 }}
+          overall_md5: ${{ steps.hash-files.outputs.overall-md5 }}
         with:
           # azcliversion: 2.30.0
           inlineScript: |
@@ -133,7 +133,7 @@ jobs:
             echo "files-exist=$files_exist" >> "$GITHUB_OUTPUT"
 
       - name: build image
-        if: ${{ steps.check-exist.outputs.files-exist != true }}
+        if: ${{ steps.check-exist.outputs.files-exist != 'true' }}
         env:
           base_tag: ${{ inputs.image-tag }}
         run: |
@@ -141,13 +141,13 @@ jobs:
           docker-compose build --build-arg="BASE_TAG=$base_tag" -t pacta-index-prep:$base_tag .
 
       - name: run container
-        if: ${{ steps.check-exist.outputs.files-exist != true }}
+        if: ${{ steps.check-exist.outputs.files-exist != 'true' }}
         run: |
           docker-compose up
 
       # https://github.com/Azure/login?tab=readme-ov-file#login-with-openid-connect-oidc-recommended
       - name: Azure Login
-        if: ${{ steps.check-exist.outputs.files-exist != true }}
+        if: ${{ steps.check-exist.outputs.files-exist != 'true' }}
         uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
