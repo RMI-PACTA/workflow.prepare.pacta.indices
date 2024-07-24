@@ -24,9 +24,9 @@ on:
         required: false
         type: string
     outputs:
-      timestamp-dir:
+      results-dir:
         description: "Timestamped directory of workflow outputs"
-        value: ${{ jobs.prep.outputs.timestamp-dir }}
+        value: ${{ jobs.prep.outputs.results-dir }}
 
 jobs:
   prep:
@@ -39,7 +39,7 @@ jobs:
       contents: read
       id-token: write
     outputs:
-      timestamp-dir: ${{ steps.export-outputs.outputs.timestamp-dir }}
+      timestamp-dir: ${{ steps.export-outputs.outputs.results-dir }}
 
     steps:
 
@@ -181,11 +181,15 @@ jobs:
           # azcliversion: 2.30.0
           inlineScript: |
             outputs_dir="outputs"
-            timestamp_dir="$overall_md5/$(ls $outputs_dir)"
+            timestamp_dir="$(ls $outputs_dir)"
             echo "timestamp-dir=$timestamp_dir"
-            workflow_index_outputs_afs_path="https://pactadatadev.file.core.windows.net/workflow-prepare-pacta-indices-outputs/$overall_md5"
+            results_dir="$overall_md5"
+            mkdir "$results_dir"
+            mv "$outputs_dir/$timestamp_dir/* "$results_dir"
+            ls "$results_dir"
+            workflow_index_outputs_afs_path="https://pactadatadev.file.core.windows.net/workflow-prepare-pacta-indices-outputs"
             az storage copy \
-              --source $outputs_dir/* \
+              --source "$results_dir" \
               --destination "$workflow_index_outputs_afs_path" \
               --recursive
 
@@ -194,7 +198,5 @@ jobs:
         env:
           overall_md5: ${{ steps.hash-files.outputs.overall-md5 }}
         run: |
-            outputs_dir="outputs"
-            timestamp_dir="$overall_md5/$(ls $outputs_dir)"
-            echo "timestamp-dir=$timestamp_dir"
-            echo "timestamp-dir=$timestamp_dir" >> "$GITHUB_OUTPUT"
+            echo "results-dir=$overall_md5"
+            echo "results-dir=$overall_md5" >> "$GITHUB_OUTPUT"
