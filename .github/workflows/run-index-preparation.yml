@@ -35,7 +35,7 @@ jobs:
       contents: read
       id-token: write
     outputs:
-      timestamp-dir: ${{ steps.export-outputs.outputs.results-dir }}
+      results-dir: ${{ steps.export-outputs.outputs.results-dir }}
 
     steps:
 
