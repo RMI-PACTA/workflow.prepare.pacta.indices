@@ -122,6 +122,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
+          name: ${{ inputs.config_active }}-${{ inputs.image-tag }}
           path: ${{ steps.hash-files.outputs.hashfile }}
           if-no-files-found: error
 
