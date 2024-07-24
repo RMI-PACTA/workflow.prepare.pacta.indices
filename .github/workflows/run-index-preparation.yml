@@ -161,11 +161,13 @@ jobs:
       - name: Upload Results
         id: upload-results
         uses: azure/CLI@v2
+        env:
+          overall_md5: ${{ steps.hash-files.outputs.overall-md5 }}
         with:
           # azcliversion: 2.30.0
           inlineScript: |
             outputs_dir="outputs"
-            timestamp_dir="$(ls $outputs_dir)"
+            timestamp_dir="$overall_md5/$(ls $outputs_dir)"
             echo "timestamp-dir=$timestamp_dir"
             echo "timestamp-dir=$timestamp_dir" >> "$GITHUB_OUTPUT"
             workflow_index_outputs_afs_path="https://pactadatadev.file.core.windows.net/workflow-prepare-pacta-indices-outputs"
