@@ -101,6 +101,7 @@ jobs:
         id: hash-files
         env:
           base_tag: ${{ inputs.image-tag }}
+          config_active: ${{ inputs.config_active }}
         run: |
           tmpfile=$(mktemp)
           docker run --rm ghcr.io/rmi-pacta/workflow.transition.monitor:${base_tag} find /usr/local/lib/R/ -type f -exec md5sum {} \; >> "$tmpfile"
@@ -116,6 +117,12 @@ jobs:
           overall_md5=$(md5sum "$tmpfile" | awk '{ print $1 }')
           echo "overall-md5=$overall_md5"
           echo "overall-md5=$overall_md5" >> "$GITHUB_OUTPUT"
+          echo "hashfile=$tmpfile" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          path: ${{ steps.hash-files.outputs.hashfile }}
+          if-no-files-found: error
 
       - name: Check if results exist
         id: check-exist
