@@ -104,7 +104,7 @@ jobs:
           config_active: ${{ inputs.config_active }}
         run: |
           tmpfile=$(mktemp)
-          docker run --rm ghcr.io/rmi-pacta/workflow.transition.monitor:${base_tag} find /usr/local/lib/R/ -type f -exec md5sum {} \; >> "$tmpfile"
+          docker run --rm ghcr.io/rmi-pacta/workflow.transition.monitor:${base_tag} Rscript -e "jsonlite::toJSON(pacta.workflow.utils:::get_package_info(as.data.frame(installed.packages())[['Package']]), auto_unbox = TRUE, pretty = TRUE)" | jq 'map(del(.built))' >> "$tmpfile"
           docker run --rm ghcr.io/rmi-pacta/workflow.transition.monitor:${base_tag} find /bound -type f -exec md5sum {} \; >> "$tmpfile"
           docker run --rm ghcr.io/rmi-pacta/workflow.transition.monitor:${base_tag} find /pacta-data -type f -exec md5sum {} \; >> "$tmpfile"
           md5sum .env >> $tmpfile
