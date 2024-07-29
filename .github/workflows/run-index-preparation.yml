@@ -20,9 +20,9 @@ on:
         required: true
         type: string
     outputs:
-      timestamp-dir:
+      results-dir:
         description: "Timestamped directory of workflow outputs"
-        value: ${{ jobs.prep.outputs.timestamp-dir }}
+        value: ${{ jobs.prep.outputs.results-dir }}
 
 jobs:
   prep:
@@ -35,7 +35,7 @@ jobs:
       contents: read
       id-token: write
     outputs:
-      timestamp-dir: ${{ steps.upload-results.outputs.timestamp-dir }}
+      results-dir: ${{ steps.export-outputs.outputs.results-dir }}
 
     steps:
 
@@ -91,7 +91,62 @@ jobs:
           mkdir "outputs"
           cat .env
 
-      - name: run container
+      - name: pull Docker base image
+        env:
+          base_tag: ${{ inputs.image-tag }}
+        run: |
+          docker pull ghcr.io/rmi-pacta/workflow.transition.monitor:${base_tag}
+
+      - name: Hash files
+        id: hash-files
+        env:
+          base_tag: ${{ inputs.image-tag }}
+          config_active: ${{ inputs.config_active }}
+        run: |
+          tmpfile=$(mktemp)
+          docker run --rm ghcr.io/rmi-pacta/workflow.transition.monitor:${base_tag} find /bound -type f -exec md5sum {} \; >> "$tmpfile"
+          docker run --rm ghcr.io/rmi-pacta/workflow.transition.monitor:${base_tag} find /pacta-data -type f -exec md5sum {} \; >> "$tmpfile"
+          md5sum .env >> $tmpfile
+          find pacta-data/ -type f -exec md5sum {} \; >> "$tmpfile"
+          find inputs/ -type f -exec md5sum {} \; >> "$tmpfile"
+          md5sum DESCRIPTION >> "$tmpfile"
+          md5sum config.yml >> "$tmpfile"
+          md5sum main.R >> "$tmpfile"
+          sort -o "$tmpfile" -k2 "$tmpfile"
+          docker run --rm ghcr.io/rmi-pacta/workflow.transition.monitor:${base_tag} Rscript -e "pak::pak('RMI-PACTA/pacta.workflow.utils'); jsonlite::toJSON(pacta.workflow.utils:::get_package_info(as.data.frame(installed.packages())[['Package']]), auto_unbox = TRUE, pretty = TRUE)" | jq 'map(del(.built))' >> "$tmpfile"
+          cat $tmpfile
+          overall_md5=$(md5sum "$tmpfile" | awk '{ print $1 }')
+          echo "overall-md5=$overall_md5"
+          echo "overall-md5=$overall_md5" >> "$GITHUB_OUTPUT"
+          echo "hashfile=$tmpfile" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.config_active }}-${{ steps.hash-files.outputs.overall-md5 }}
+          path: ${{ steps.hash-files.outputs.hashfile }}
+          if-no-files-found: error
+          overwrite: true
+
+      - name: Check if results exist
+        id: check-exist
+        uses: azure/CLI@v2
+        env:
+          overall_md5: ${{ steps.hash-files.outputs.overall-md5 }}
+        with:
+          # azcliversion: 2.30.0
+          inlineScript: |
+            files_exist=$(
+              az storage directory exists \
+                --name "$overall_md5" \
+                --share-name "workflow-prepare-pacta-indices-outputs" \
+                --account-name "pactadatadev" |
+                jq -rc '.exists'
+            )
+            echo "files-exist=$files_exist"
+            echo "files-exist=$files_exist" >> "$GITHUB_OUTPUT"
+
+      - name: build image
+        if: ${{ steps.check-exist.outputs.files-exist != 'true' }}
         env:
           base_tag: ${{ inputs.image-tag }}
         run: |
@@ -99,11 +154,13 @@ jobs:
           docker-compose build --build-arg="BASE_TAG=$base_tag" -t pacta-index-prep:$base_tag .
 
       - name: run container
+        if: ${{ steps.check-exist.outputs.files-exist != 'true' }}
         run: |
           docker-compose up
 
       # https://github.com/Azure/login?tab=readme-ov-file#login-with-openid-connect-oidc-recommended
       - name: Azure Login
+        if: ${{ steps.check-exist.outputs.files-exist != 'true' }}
         uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
@@ -113,16 +170,30 @@ jobs:
       # https://github.com/marketplace/actions/azure-cli-action#workflow-to-execute-an-azure-cli-script-of-a-specific-cli-version
       - name: Upload Results
         id: upload-results
+        if: ${{ steps.check-exist.outputs.files-exist != 'true' }}
         uses: azure/CLI@v2
+        env:
+          overall_md5: ${{ steps.hash-files.outputs.overall-md5 }}
         with:
           # azcliversion: 2.30.0
           inlineScript: |
             outputs_dir="outputs"
             timestamp_dir="$(ls $outputs_dir)"
             echo "timestamp-dir=$timestamp_dir"
-            echo "timestamp-dir=$timestamp_dir" >> "$GITHUB_OUTPUT"
+            results_dir="$overall_md5"
+            mkdir "$results_dir"
+            mv $outputs_dir/$timestamp_dir/* "$results_dir"
+            ls "$results_dir"
             workflow_index_outputs_afs_path="https://pactadatadev.file.core.windows.net/workflow-prepare-pacta-indices-outputs"
             az storage copy \
-              --source $outputs_dir/* \
+              --source "$results_dir" \
               --destination "$workflow_index_outputs_afs_path" \
               --recursive
+
+      - name: export-outputs
+        id: export-outputs
+        env:
+          overall_md5: ${{ steps.hash-files.outputs.overall-md5 }}
+        run: |
+            echo "results-dir=$overall_md5"
+            echo "results-dir=$overall_md5" >> "$GITHUB_OUTPUT"
