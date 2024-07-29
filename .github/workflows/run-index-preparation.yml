@@ -104,7 +104,6 @@ jobs:
           config_active: ${{ inputs.config_active }}
         run: |
           tmpfile=$(mktemp)
-          docker run --rm ghcr.io/rmi-pacta/workflow.transition.monitor:${base_tag} Rscript -e "pak::pak('RMI-PACTA/pacta.workflow.utils'); jsonlite::toJSON(pacta.workflow.utils:::get_package_info(as.data.frame(installed.packages())[['Package']]), auto_unbox = TRUE, pretty = TRUE)" | jq 'map(del(.built))' >> "$tmpfile"
           docker run --rm ghcr.io/rmi-pacta/workflow.transition.monitor:${base_tag} find /bound -type f -exec md5sum {} \; >> "$tmpfile"
           docker run --rm ghcr.io/rmi-pacta/workflow.transition.monitor:${base_tag} find /pacta-data -type f -exec md5sum {} \; >> "$tmpfile"
           md5sum .env >> $tmpfile
@@ -114,6 +113,7 @@ jobs:
           md5sum config.yml >> "$tmpfile"
           md5sum main.R >> "$tmpfile"
           sort -o "$tmpfile" -k2 "$tmpfile"
+          docker run --rm ghcr.io/rmi-pacta/workflow.transition.monitor:${base_tag} Rscript -e "pak::pak('RMI-PACTA/pacta.workflow.utils'); jsonlite::toJSON(pacta.workflow.utils:::get_package_info(as.data.frame(installed.packages())[['Package']]), auto_unbox = TRUE, pretty = TRUE)" | jq 'map(del(.built))' >> "$tmpfile"
           cat $tmpfile
           overall_md5=$(md5sum "$tmpfile" | awk '{ print $1 }')
           echo "overall-md5=$overall_md5"
