@@ -151,12 +151,12 @@ jobs:
           base_tag: ${{ inputs.image-tag }}
         run: |
           base_tag=$(echo "$base_tag" | tr -d '[:space:]')
-          docker-compose build --build-arg="BASE_TAG=$base_tag" -t pacta-index-prep:$base_tag .
+          docker compose build --build-arg="BASE_TAG=$base_tag" -t pacta-index-prep:$base_tag .
 
       - name: run container
         if: ${{ steps.check-exist.outputs.files-exist != 'true' }}
         run: |
-          docker-compose up
+          docker compose up
 
       # https://github.com/Azure/login?tab=readme-ov-file#login-with-openid-connect-oidc-recommended
       - name: Azure Login
