@@ -127,23 +127,34 @@ jobs:
           if-no-files-found: error
           overwrite: true
 
-      - name: Check if results exist
-        id: check-exist
+      - name: Query AZ for files
+        id: query-az
         uses: azure/CLI@v2
         env:
           overall_md5: ${{ steps.hash-files.outputs.overall-md5 }}
         with:
           # azcliversion: 2.30.0
           inlineScript: |
-            files_exist=$(
+            az_files_exist=$(
               az storage directory exists \
                 --name "$overall_md5" \
                 --share-name "workflow-prepare-pacta-indices-outputs" \
-                --account-name "pactadatadev" |
-                jq -rc '.exists'
+                --account-name "pactadatadev"
             )
-            echo "files-exist=$files_exist"
-            echo "files-exist=$files_exist" >> "$GITHUB_OUTPUT"
+            echo "az-files-exist=$az_files_exist"
+            echo "az-files-exist=$az_files_exist" >> "$GITHUB_OUTPUT"
+
+      - name: Check if results exist
+        id: check-exist
+        env:
+          az_files_exist: ${{ steps.query-az.outputs.az-files-exist }}
+        run: |
+          files_exist=$(
+            echo "$az_files_exist" |
+            jq -rc '.exists'
+          )
+          echo "files-exist=$files_exist"
+          echo "files-exist=$files_exist" >> "$GITHUB_OUTPUT"
 
       - name: build image
         if: ${{ steps.check-exist.outputs.files-exist != 'true' }}
