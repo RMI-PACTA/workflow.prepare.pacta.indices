@@ -139,7 +139,8 @@ jobs:
               az storage directory exists \
                 --name "$overall_md5" \
                 --share-name "workflow-prepare-pacta-indices-outputs" \
-                --account-name "pactadatadev"
+                --account-name "pactadatadev" |
+                tr -d '\n'
             )
             echo "az-files-exist=$az_files_exist"
             echo "az-files-exist=$az_files_exist" >> "$GITHUB_OUTPUT"
