@@ -248,11 +248,32 @@ for (portfolio_name in portfolio_names) {
 
 # -------------------------------------------------------------------------
 
-output_files <- list.files(
-  temporary_directory,
-  pattern = "*_portfolio[.]rds$",
-  full.names = TRUE
-)
+output_files <- tibble::tibble(
+  path = list.files(
+    temporary_directory,
+    pattern = "*_portfolio[.]rds$",
+    full.names = TRUE
+  )
+) %>%
+  dplyr::mutate(
+    port_type = dplyr::case_when(
+      grepl(pattern = "_Bonds_", x = path, fixed = TRUE) ~ "Bonds",
+      grepl(pattern = "_Equity_", x = path, fixed = TRUE) ~ "Equity",
+      TRUE ~ NA_character_
+    )
+  ) %>%
+  dplyr::mutate(
+    expected_port_type = dplyr::if_else(
+      condition = grepl(pattern = "Global Corp Bond", x = path, fixed = TRUE),
+      true = "Bonds",
+      false = "Equity"
+    )
+  ) %>%
+  dplyr::filter(
+    port_type == expected_port_type
+  ) %>%
+  dplyr::pull(path)
+
 
 logger::log_info("Combining results files.")
 combined <-
