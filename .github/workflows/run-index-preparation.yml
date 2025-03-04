@@ -62,7 +62,6 @@ jobs:
         with:
           # azcliversion: 2.30.0
           inlineScript: |
-            tdnf install -y azcopy;
             pacta_data_afs_path="https://pactadatadev.file.core.windows.net/workflow-data-preparation-outputs/$data_share_path/*"
             az storage copy \
               --source "$pacta_data_afs_path" \
@@ -74,7 +73,6 @@ jobs:
         with:
           # azcliversion: 2.30.0
           inlineScript: |
-            tdnf install -y azcopy;
             benchmark_data_afs_path="https://pactadatadev.file.core.windows.net/workflow-benchmark-preparation-outputs/*"
             az storage copy \
               --source "$benchmark_data_afs_path" \
@@ -191,7 +189,6 @@ jobs:
         with:
           # azcliversion: 2.30.0
           inlineScript: |
-            tdnf install -y azcopy;
             outputs_dir="outputs"
             timestamp_dir="$(ls $outputs_dir)"
             echo "timestamp-dir=$timestamp_dir"
