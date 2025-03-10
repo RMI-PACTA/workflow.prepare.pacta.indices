@@ -43,7 +43,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: RMI-PACTA/workflow.prepare.pacta.indices
-          token: ${{ secrets.REPO_PAT }}
 
       # https://github.com/Azure/login?tab=readme-ov-file#login-with-openid-connect-oidc-recommended
       - name: Azure Login
