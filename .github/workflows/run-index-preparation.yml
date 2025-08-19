@@ -40,7 +40,7 @@ jobs:
     steps:
 
       - name: Checkout workflow.prepare.pacta.indices
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: RMI-PACTA/workflow.prepare.pacta.indices
 
